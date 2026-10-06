@@ -34,7 +34,29 @@ void setup() {
   lcd.begin(16, 2);
   lcd.clear();
 
-  matrix.begin();
+  if (!matrix.begin()) {
+    // The matrix library could not acquire its refresh timer.
+    // Retry once before continuing with the rest of ECLIPSE CORE.
+    delay(25);
+    matrix.begin();
+  }
+
+  delay(25);
+
+  // Prove the matrix is alive before any application state starts.
+  {
+    uint8_t testFrame[8][12] = {};
+    for (uint8_t y = 0; y < 8; y++) {
+      for (uint8_t x = 0; x < 12; x++) {
+        testFrame[y][x] = (x == y || x == (11 - y));
+      }
+    }
+    showMatrix(testFrame);
+    delay(350);
+    clearMatrix();
+    delay(50);
+  }
+
 
   loadHighScore();
 
