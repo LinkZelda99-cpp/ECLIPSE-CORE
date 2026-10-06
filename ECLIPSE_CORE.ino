@@ -5997,3 +5997,496 @@ void setup() {
 
 
   rgbPurple();
+
+
+
+  drawLCD(
+
+    "    ECLIPSE",
+
+    "      CORE"
+
+  );
+
+
+
+
+
+  tone(
+
+    PIN_BUZZER,
+
+    660,
+
+    80
+
+  );
+
+
+
+  delay(100);
+
+
+
+
+
+  tone(
+
+    PIN_BUZZER,
+
+    880,
+
+    80
+
+  );
+
+
+
+  delay(100);
+
+
+
+
+
+  tone(
+
+    PIN_BUZZER,
+
+    1320,
+
+    120
+
+  );
+
+
+
+  delay(350);
+
+
+
+
+
+  buzzerOff();
+
+
+
+  lcd.clear();
+
+
+
+  invalidateLCD();
+
+
+
+  state =
+
+    STATE_MENU;
+
+}
+
+
+
+
+
+// ============================================================
+
+// MAIN LOOP
+
+// ============================================================
+
+
+
+void loop() {
+
+
+
+  /*
+
+    Global input handling.
+
+  */
+
+
+
+  updateEncoder();
+
+
+
+  updateEncoderButton();
+
+  updateBackButton();
+
+  if (consumeBackPress()) {
+    handleBackButton();
+    return;
+  }
+
+
+
+
+
+  switch (
+
+    state
+
+  ) {
+
+
+
+    // ========================================================
+
+    // MAIN MENU
+
+    // ========================================================
+
+
+
+    case STATE_MENU:
+
+
+
+      updateMainMenu();
+
+
+
+      break;
+
+
+
+
+
+    // ========================================================
+
+    // GAMES MENU
+
+    // ========================================================
+
+
+
+    case STATE_GAMES_MENU:
+
+
+
+      drawGamesMenu();
+
+
+
+      updateGamesMenu();
+
+
+
+      break;
+
+
+
+
+
+    // ========================================================
+
+    // ECLIPSE CODE
+
+    // ========================================================
+
+
+
+    case STATE_CODE:
+
+
+
+      updateCodeGame();
+
+
+
+      break;
+
+
+
+
+
+    case STATE_CODE_RESULT:
+
+
+
+      updateCodeResult();
+
+
+
+      break;
+
+
+
+
+
+    // ========================================================
+
+    // ECLIPSE REACT
+
+    // ========================================================
+
+
+
+    case STATE_REACT_WAIT:
+
+
+
+      updateReactWait();
+
+
+
+      break;
+
+
+
+
+
+    case STATE_REACT_READY:
+
+
+
+      updateReactReady();
+
+
+
+      break;
+
+
+
+
+
+    case STATE_REACT_RESULT:
+
+
+
+      updateReactResult();
+
+
+
+      break;
+
+
+
+
+
+    // ========================================================
+
+    // ECLIPSE MEMORY
+
+    // ========================================================
+
+
+
+    case STATE_MEMORY_SHOW:
+
+
+
+      updateMemoryShow();
+
+
+
+      break;
+
+
+
+
+
+    case STATE_MEMORY_INPUT:
+
+
+
+      updateMemoryInput();
+
+
+
+      break;
+
+
+
+
+
+    case STATE_MEMORY_RESULT:
+
+
+
+      updateMemoryResult();
+
+
+
+      break;
+
+
+
+
+
+    // ========================================================
+
+    // SNAKE
+
+    // ========================================================
+
+
+
+    case STATE_SNAKE_READY:
+
+
+
+      drawSnakeReady();
+
+
+
+
+
+      if (
+
+        consumeEncoderPress()
+
+      ) {
+
+
+
+        state =
+
+          STATE_SNAKE;
+
+
+
+        invalidateLCD();
+
+
+
+        lcd.clear();
+
+
+
+        clearEncoderEvents();
+
+
+
+        lastSnakeMove =
+
+          millis();
+
+      }
+
+
+
+      break;
+
+
+
+
+
+    case STATE_SNAKE:
+
+
+
+      updateSnake();
+
+
+
+      break;
+
+
+
+
+
+    case STATE_SNAKE_GAME_OVER:
+
+
+
+      updateSnakeGameOver();
+
+
+
+      break;
+
+
+
+
+
+    // ========================================================
+
+    // LIGHT
+
+    // ========================================================
+
+
+
+    case STATE_LIGHT:
+
+
+
+      updateLightApp();
+
+
+
+      break;
+
+
+
+
+
+    // ========================================================
+
+    // DISTANCE
+
+    // ========================================================
+
+
+
+    case STATE_DISTANCE:
+
+
+
+      updateDistanceApp();
+
+
+
+      break;
+
+
+
+
+
+    // ========================================================
+
+    // SCORES
+
+    // ========================================================
+
+
+
+    case STATE_SCORES:
+
+
+
+      updateScoresApp();
+
+
+
+      break;
+
+
+
+
+
+    // ========================================================
+
+    // CORE INFO
+
+    // ========================================================
+
+
+
+    case STATE_CORE_INFO:
+
+
+
+      updateCoreInfo();
+
+
+
+      break;
+
+  }
+
+}
