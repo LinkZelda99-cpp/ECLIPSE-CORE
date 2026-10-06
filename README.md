@@ -4,13 +4,13 @@ Modular Arduino UNO R4 WiFi embedded system with LCD UI, LED matrix graphics, se
 
 ## Open in Arduino IDE
 
-The repository name is `ECLIPSE-CORE-`, so the primary Arduino sketch is intentionally named:
+The repository is **ECLIPSE-CORE**, and the primary Arduino sketch is:
 
 ```
-ECLIPSE-CORE-.ino
+ECLIPSE-CORE.ino
 ```
 
-Arduino requires the primary `.ino` filename to match the sketch folder name.
+There is only one primary `.ino` sketch in the repository. This prevents Arduino IDE from compiling duplicate `setup()` and `loop()` definitions.
 
 Select **Arduino UNO R4 WiFi** as the board.
 
@@ -31,13 +31,57 @@ Select **Arduino UNO R4 WiFi** as the board.
 
 ## Hardware
 
-The project targets the Arduino UNO R4 WiFi and its built-in 12×8 LED matrix. The UNO R4 WiFi officially provides the 12×8 matrix and the Arduino LED Matrix library in its board package.
+The project targets the Arduino UNO R4 WiFi and its built-in 12×8 LED matrix. Matrix rendering uses the `Arduino_LED_Matrix` library provided by the UNO R4 board package.
+
+### Pin map
+
+| Pin | Function |
+|---|---|
+| D2 | Rotary encoder DT |
+| D3 | Rotary encoder CLK |
+| D4 | DHT11 data |
+| D5 | Rotary encoder button |
+| D6 | HC-SR04 TRIG |
+| D7 | HC-SR04 ECHO |
+| D8 | Passive buzzer |
+| D9 | Back button |
+| D10 | RGB LED red |
+| D11 | RGB LED green |
+| D12 | RGB LED blue |
+| D13 | LCD RS |
+| A0 | Photoresistor |
+| A1 | LCD E |
+| A2 | LCD D4 |
+| A3 | LCD D5 |
+| A4 | LCD D6 |
+| A5 | LCD D7 |
+
+The DHT11 is wired to D4 but is not currently used by the application.
+
+## Features
+
+### Main menu
+
+1. GAMES
+2. LIGHT
+3. DISTANCE
+4. SCORES
+5. CORE INFO
+
+### Games
+
+- **ECLIPSE CODE** — four-digit code guessing game.
+- **ECLIPSE REACT** — reaction-time game.
+- **ECLIPSE MEMORY** — sequence memory game using the LED matrix.
+- **SNAKE** — 12×8 matrix Snake with rotary-encoder turning, blinking apple, collision detection, scoring, and EEPROM high score storage.
+
+The D9 back button returns from feature/game screens to the appropriate menu.
 
 ## Current structure
 
 ```text
-ECLIPSE-CORE-/
-├── ECLIPSE-CORE-.ino
+ECLIPSE-CORE/
+├── ECLIPSE-CORE.ino
 ├── Config.cpp
 ├── Config.h
 ├── Input.cpp
@@ -65,6 +109,10 @@ ECLIPSE-CORE-/
 └── README.md
 ```
 
-The obsolete duplicate monolithic `Core.cpp/Core.h` implementation has been removed so the modular source files are the only implementations being compiled.
+The old `Core.cpp`, `Core.h`, and obsolete `ECLIPSE-CORE-.ino` implementations are not part of the current repository structure.
 
-The source has been cleaned up from the earlier generated split, including duplicate-definition problems and the sketch entry-point naming problem. The repository has **not** been represented as compiler-verified because an Arduino UNO R4 WiFi compiler environment is not available in this workspace.
+## Matrix implementation
+
+ECLIPSE CORE uses the UNO R4 WiFi matrix API's `renderBitmap()` path for its 8×12 application frames. The startup sequence also displays a short X-shaped matrix self-test before entering the application.
+
+The repository has been checked for duplicate sketch entry points and the current source structure. It has **not** been represented as compiler-verified because an Arduino UNO R4 WiFi compiler environment is not available in this workspace.
