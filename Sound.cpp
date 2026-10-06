@@ -1,0 +1,14 @@
+#include "Sound.h"
+void rgbOff(){digitalWrite(PIN_RGB_R,LOW);digitalWrite(PIN_RGB_G,LOW);digitalWrite(PIN_RGB_B,LOW);}
+void rgbRed(){digitalWrite(PIN_RGB_R,HIGH);digitalWrite(PIN_RGB_G,LOW);digitalWrite(PIN_RGB_B,LOW);}
+void rgbGreen(){digitalWrite(PIN_RGB_R,LOW);digitalWrite(PIN_RGB_G,HIGH);digitalWrite(PIN_RGB_B,LOW);}
+void rgbBlue(){digitalWrite(PIN_RGB_R,LOW);digitalWrite(PIN_RGB_G,LOW);digitalWrite(PIN_RGB_B,HIGH);}
+void rgbPurple(){digitalWrite(PIN_RGB_R,HIGH);digitalWrite(PIN_RGB_G,LOW);digitalWrite(PIN_RGB_B,HIGH);}
+void rgbWhite(){digitalWrite(PIN_RGB_R,HIGH);digitalWrite(PIN_RGB_G,HIGH);digitalWrite(PIN_RGB_B,HIGH);}
+void buzzerOff(){noTone(PIN_BUZZER);digitalWrite(PIN_BUZZER,LOW);}
+void soundNavigate(){tone(PIN_BUZZER,1100,25);}
+void soundSelect(){tone(PIN_BUZZER,1500,60);}
+void soundSuccess(){tone(PIN_BUZZER,1400,60);delay(70);tone(PIN_BUZZER,1800,80);}
+void soundFailure(){tone(PIN_BUZZER,250,120);}
+void soundScore(){tone(PIN_BUZZER,1250,35);}
+void soundGameOver(){tone(PIN_BUZZER,180,180);}
