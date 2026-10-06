@@ -11,6 +11,7 @@ extern ArduinoLEDMatrix matrix;
 extern const int EEPROM_HIGH_SCORE_ADDRESS;
 extern uint16_t highScore;
 extern uint8_t eclipseLogo[8][12];
+extern uint8_t matrixFrame[8][12]; extern uint8_t matrixScanIndex; extern unsigned long matrixLastScanMicros; extern const unsigned long MATRIX_SCAN_INTERVAL_US;
 
 enum AppState { STATE_MENU, STATE_GAMES_MENU, STATE_CODE, STATE_CODE_RESULT, STATE_REACT_WAIT, STATE_REACT_READY, STATE_REACT_RESULT, STATE_MEMORY_SHOW, STATE_MEMORY_INPUT, STATE_MEMORY_RESULT, STATE_SNAKE_READY, STATE_SNAKE, STATE_SNAKE_GAME_OVER, STATE_LIGHT, STATE_DISTANCE, STATE_SCORES, STATE_CORE_INFO };
 extern AppState state;
