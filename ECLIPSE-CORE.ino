@@ -34,16 +34,13 @@ void setup() {
   lcd.begin(16, 2);
   lcd.clear();
 
-  if (!matrix.begin()) {
-    // The matrix library could not acquire its refresh timer.
-    // Retry once before continuing with the rest of ECLIPSE CORE.
-    delay(25);
-    matrix.begin();
-  }
+  // The matrix uses ECLIPSE CORE's own multiplexing service.
+  // Do not call matrix.begin(); it allocates an FspTimer that this
+  // project deliberately avoids.
 
-  delay(25);
+  matrixLastScanMicros = micros();
 
-  // Prove the matrix is alive before any application state starts.
+  // Prove the physical matrix path is alive before application state starts.
   {
     uint8_t testFrame[8][12] = {};
     for (uint8_t y = 0; y < 8; y++) {
@@ -51,10 +48,11 @@ void setup() {
         testFrame[y][x] = (x == y || x == (11 - y));
       }
     }
+
     showMatrix(testFrame);
-    delay(350);
+    matrixDelay(500);
     clearMatrix();
-    delay(50);
+    matrixDelay(50);
   }
 
 
@@ -80,13 +78,13 @@ void setup() {
   drawLCD("    ECLIPSE", "      CORE");
 
   tone(PIN_BUZZER, 660, 80);
-  delay(100);
+  matrixDelay(100);
 
   tone(PIN_BUZZER, 880, 80);
-  delay(100);
+  matrixDelay(100);
 
   tone(PIN_BUZZER, 1320, 120);
-  delay(350);
+  matrixDelay(350);
 
   buzzerOff();
 
@@ -97,6 +95,8 @@ void setup() {
 }
 
 void loop() {
+  matrixService();
+
   updateEncoder();
   updateEncoderButton();
   updateBackButton();
