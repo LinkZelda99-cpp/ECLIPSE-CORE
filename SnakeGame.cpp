@@ -1,0 +1,12 @@
+#include "SnakeGame.h"
+void placeApple(){if(snakeLength>=SNAKE_MAX_LENGTH)return;bool valid=false;while(!valid){appleX=random(0,SNAKE_WIDTH);appleY=random(0,SNAKE_HEIGHT);valid=true;for(uint8_t i=0;i<snakeLength;i++)if(snake[i].x==appleX&&snake[i].y==appleY){valid=false;break;}}}
+bool snakeHitsBody(int8_t x,int8_t y,bool growing){uint8_t n=snakeLength;if(!growing&&n>0)n--;for(uint8_t i=0;i<n;i++)if(snake[i].x==x&&snake[i].y==y)return true;return false;}
+void resetSnake(){snakeLength=3;snakeScore=0;snakeDirection=1;snake[0]={6,4};snake[1]={5,4};snake[2]={4,4};appleX=9;appleY=4;placeApple();lastSnakeMove=millis();lastAppleBlink=millis();appleVisible=true;buzzerOff();rgbGreen();clearEncoderEvents();}
+void startSnakeGame(){resetSnake();state=STATE_SNAKE_READY;invalidateLCD();lcd.clear();}
+void drawSnakeReady(){drawLCD("SNAKE","PRESS TO START");uint8_t f[8][12]={};f[4][3]=f[4][4]=f[4][5]=f[3][5]=1;f[2][9]=1;showMatrix(f);rgbGreen();}
+void drawSnake(){uint8_t f[8][12]={};for(uint8_t i=0;i<snakeLength;i++)f[snake[i].y][snake[i].x]=1;if(appleVisible)f[appleY][appleX]=1;showMatrix(f);drawLCD("SNAKE","SCORE: "+String(snakeScore));rgbGreen();}
+void turnSnake(int turn){int d=snakeDirection+turn;if(d<0)d=3;if(d>3)d=0;snakeDirection=d;soundNavigate();}
+void snakeGameOver(){submitScore(snakeScore);soundGameOver();rgbRed();state=STATE_SNAKE_GAME_OVER;invalidateLCD();}
+void updateSnakeMovement(){int8_t nx=snake[0].x+snakeDX[snakeDirection],ny=snake[0].y+snakeDY[snakeDirection];if(nx<0||nx>=SNAKE_WIDTH||ny<0||ny>=SNAKE_HEIGHT){snakeGameOver();return;}bool ate=(nx==appleX&&ny==appleY);if(snakeHitsBody(nx,ny,ate)){snakeGameOver();return;}if(ate&&snakeLength<SNAKE_MAX_LENGTH)snakeLength++;for(int i=snakeLength-1;i>0;i--)snake[i]=snake[i-1];snake[0].x=nx;snake[0].y=ny;if(ate){snakeScore++;soundScore();placeApple();}lastSnakeMove=millis();}
+void updateSnake(){int d=consumeEncoderDelta();if(d){if(d>0)turnSnake(1);else turnSnake(-1);}if(millis()-lastAppleBlink>=APPLE_BLINK_MS){lastAppleBlink=millis();appleVisible=!appleVisible;}if(millis()-lastSnakeMove>=SNAKE_MOVE_MS)updateSnakeMovement();if(state==STATE_SNAKE)drawSnake();}
+void updateSnakeGameOver(){drawLCD("SNAKE GAME OVER","SCORE: "+String(snakeScore));uint8_t f[8][12]={};for(int y=0;y<8;y++){int a=1+(y*9)/7,b=10-(y*9)/7;if(a>=0&&a<12)f[y][a]=1;if(b>=0&&b<12)f[y][b]=1;}showMatrix(f);rgbRed();if(consumeEncoderPress())startSnakeGame();}
