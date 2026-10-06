@@ -49,7 +49,8 @@ void showMemorySymbol(uint8_t s) {
 }
 
 void updateMemoryShow() {
-  drawLCD("MEMORY", "LEVEL " + String(memoryLevel));
+  // MEMORY is a matrix-first game, so the LCD becomes the score HUD.
+  drawLCD("MEMORY SCORE", String(memoryScore()));
 
   if (memoryShowPosition >= memoryLevel) {
     memoryInputPosition = 0;
@@ -61,46 +62,44 @@ void updateMemoryShow() {
 
   if (millis() - memoryTimer >= 650) {
     uint8_t s = memorySequence[memoryShowPosition];
+
     showMemorySymbol(s);
     tone(PIN_BUZZER, 700 + s * 250, 100);
+
     memoryShowPosition++;
     memoryTimer = millis();
   }
 
-  // Between sequence flashes, the matrix still carries the score.
-  // This makes the two displays feel synchronized.
-  if (millis() - memoryTimer < 250) {
-    showMemorySymbol(memorySequence[memoryShowPosition == 0 ? 0 : memoryShowPosition - 1]);
+  // Keep the last symbol visible briefly instead of leaving the
+  // matrix blank between sequence steps.
+  if (memoryShowPosition > 0 &&
+      memoryShowPosition <= memoryLevel &&
+      millis() - memoryTimer < 250) {
+    showMemorySymbol(memorySequence[memoryShowPosition - 1]);
   }
 }
 
 void drawMemoryInput() {
-  drawLCD(
-    "MEMORY",
-    "PICK " + String(memoryChoice + 1) + " " +
-    String(memoryInputPosition + 1) + "/" + String(memoryLevel)
-  );
+  // Matrix is the game. LCD is the live numeric score HUD.
+  drawLCD("MEMORY SCORE", String(memoryScore()));
 
-  // LCD carries the interaction; matrix carries the live score.
-  showMatrixNumber(memoryScore());
-
-  // Add a small indicator for the currently selected quadrant.
   uint8_t f[8][12] = {};
   uint8_t q = memoryChoice;
 
   int x0 = (q % 2 == 0) ? 1 : 7;
   int y0 = (q < 2) ? 1 : 5;
 
-  for (int y = y0; y < y0 + 3 && y < 8; y++)
-    for (int x = x0; x < x0 + 4; x++)
+  for (int y = y0; y < y0 + 3 && y < 8; y++) {
+    for (int x = x0; x < x0 + 4; x++) {
       f[y][x] = 1;
+    }
+  }
 
-  // Keep a single pixel moving to show active encoder state.
+  // Animate the selected quadrant so the matrix visibly responds
+  // to the encoder even before the player presses the button.
   uint8_t p = (millis() / 120) % 4;
   f[y0][x0 + p] = 1;
 
-  // The selected quadrant is intentionally the primary matrix visual.
-  // Score is shown on LCD for the interactive matrix game state.
   showMatrix(f);
 }
 
@@ -111,8 +110,10 @@ void updateMemoryInput() {
 
   if (d) {
     memoryChoice += d;
+
     while (memoryChoice < 0) memoryChoice += 4;
     while (memoryChoice >= 4) memoryChoice -= 4;
+
     soundNavigate();
   }
 
@@ -152,11 +153,11 @@ void updateMemoryInput() {
 
 void updateMemoryResult() {
   if (memoryWon) {
-    drawLCD("MEMORY MASTER", "SCORE " + String(memoryScore()));
+    drawLCD("MEMORY MASTER", String(memoryScore()));
     showMatrixNumber(memoryScore());
     rgbGreen();
   } else {
-    drawLCD("MEMORY FAILED", "SCORE " + String(memoryScore()));
+    drawLCD("MEMORY FAILED", String(memoryScore()));
     showMatrixNumber(memoryScore());
     rgbRed();
   }
