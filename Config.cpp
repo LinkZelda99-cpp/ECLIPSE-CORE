@@ -5,7 +5,7 @@ LiquidCrystal lcd(PIN_LCD_RS,PIN_LCD_E,PIN_LCD_D4,PIN_LCD_D5,PIN_LCD_D6,PIN_LCD_
 ArduinoLEDMatrix matrix;
 const int EEPROM_HIGH_SCORE_ADDRESS=0;
 uint16_t highScore=0;
-uint8_t eclipseLogo[8][12]={
+uint8_t matrixFrame[8][12]={}; uint8_t matrixScanIndex=0; unsigned long matrixLastScanMicros=0; const unsigned long MATRIX_SCAN_INTERVAL_US=100; uint8_t eclipseLogo[8][12]={
 {0,0,0,1,1,1,1,1,1,0,0,0},{0,0,1,1,1,1,1,1,1,1,0,0},
 {0,1,1,1,1,0,0,1,1,1,1,0},{1,1,1,1,0,0,1,1,1,1,1,1},
 {1,1,1,1,0,0,1,1,1,1,1,1},{0,1,1,1,1,0,0,1,1,1,1,0},
