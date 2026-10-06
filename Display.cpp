@@ -1,5 +1,12 @@
 #include "Display.h"
 
+namespace {
+  // Persistent packed frame used by ArduinoLEDMatrix::loadFrame().
+  // Keeping this buffer static avoids passing a temporary bitmap through
+  // the library's renderBitmap macro.
+  uint32_t matrixFrame[3] = {0, 0, 0};
+}
+
 void invalidateLCD() {
   lcdCache0 = "";
   lcdCache1 = "";
@@ -32,20 +39,46 @@ void drawLCD(String line0, String line1) {
   writeLCDLine(1, line1);
 }
 
-// ============================================================
+// ---------------------------------------------------------------------------
 // LED MATRIX ENGINE
-// ============================================================
-// Keep one rendering path for the entire system. The UNO R4
-// library's renderBitmap path is reliable on the installed R4
-// core and lets every app replace the frame independently.
+// ---------------------------------------------------------------------------
+// The UNO R4 WiFi's LED matrix is driven by ArduinoLEDMatrix.
+// Instead of renderBitmap(), ECLIPSE CORE now uses the library's direct
+// loadFrame() API with a persistent 96-bit frame buffer.
+//
+// Arduino's matrix library packs the 96 pixels as three 32-bit words,
+// in row-major order. The library itself handles the electrical
+// charlieplexing/bit reversal when the frame is refreshed.
 
 void showMatrix(uint8_t frame[8][12]) {
-  matrix.renderBitmap(frame, 8, 12);
+  matrixFrame[0] = 0;
+  matrixFrame[1] = 0;
+  matrixFrame[2] = 0;
+
+  for (uint8_t y = 0; y < 8; y++) {
+    for (uint8_t x = 0; x < 12; x++) {
+      matrixFrame[0] <<= 1;
+      matrixFrame[1] <<= 1;
+      matrixFrame[2] <<= 1;
+
+      uint8_t pixel = frame[y][x] ? 1 : 0;
+
+      if (y * 12 + x < 32) {
+        matrixFrame[0] |= pixel;
+      } else if (y * 12 + x < 64) {
+        matrixFrame[1] |= pixel;
+      } else {
+        matrixFrame[2] |= pixel;
+      }
+    }
+  }
+
+  matrix.loadFrame(matrixFrame);
 }
 
 void clearMatrix() {
-  uint8_t blank[8][12] = {};
-  showMatrix(blank);
+  const uint32_t blank[3] = {0, 0, 0};
+  matrix.loadFrame(blank);
 }
 
 void showEclipseLogo() {
@@ -78,9 +111,9 @@ void showMatrixNumber(uint16_t value) {
 
   uint8_t frame[8][12] = {};
 
-  // Three digits, centered horizontally.
   for (uint8_t d = 0; d < 3; d++) {
     uint8_t x0 = 1 + d * 4;
+
     for (uint8_t y = 0; y < 5; y++) {
       for (uint8_t x = 0; x < 3; x++) {
         if (digitFont[digits[d]][y] & (1 << (2 - x))) {
@@ -90,8 +123,6 @@ void showMatrixNumber(uint16_t value) {
     }
   }
 
-  // A subtle moving underline makes the score feel alive instead
-  // of like a static label.
   uint8_t pulse = (millis() / 140) % 12;
   frame[7][pulse] = 1;
 
