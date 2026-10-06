@@ -1,7 +1,6 @@
 #pragma once
 #include <Arduino.h>
 #include <LiquidCrystal.h>
-#include <ArduinoGraphics.h>
 #include <Arduino_LED_Matrix.h>
 #include <EEPROM.h>
 
