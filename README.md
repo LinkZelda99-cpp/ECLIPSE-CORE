@@ -10,7 +10,7 @@ The repository name is `ECLIPSE-CORE-`, so the primary Arduino sketch is intenti
 ECLIPSE-CORE-.ino
 ```
 
-Arduino requires the primary `.ino` filename to match the sketch folder name. citeturn0search0turn2search1
+Arduino requires the primary `.ino` filename to match the sketch folder name.
 
 Select **Arduino UNO R4 WiFi** as the board.
 
@@ -31,7 +31,7 @@ Select **Arduino UNO R4 WiFi** as the board.
 
 ## Hardware
 
-The project targets the Arduino UNO R4 WiFi and its built-in 12×8 LED matrix. The UNO R4 WiFi officially provides the 12×8 matrix and the Arduino LED Matrix library in its board package. citeturn1search1
+The project targets the Arduino UNO R4 WiFi and its built-in 12×8 LED matrix. The UNO R4 WiFi officially provides the 12×8 matrix and the Arduino LED Matrix library in its board package.
 
 ## Current structure
 
