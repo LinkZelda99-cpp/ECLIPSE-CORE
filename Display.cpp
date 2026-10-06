@@ -1,4 +1,5 @@
 #include "Display.h"
+#include <string.h>
 
 void invalidateLCD() {
   lcdCache0 = "";
@@ -47,20 +48,56 @@ void drawLCD(String line0, String line1) {
 // ============================================================
 // LED MATRIX
 // ============================================================
-// This intentionally uses the exact bitmap path from the original
-// working ECLIPSE CORE v2.2 sketch.
+// The UNO R4 WiFi matrix is a 12x8 charlieplexed display.
 //
-// Arduino_LED_Matrix.h defines renderBitmap() as a call to
-// loadPixels(), which performs the library's required 96-bit
-// packing and frame loading.
+// Arduino_LED_Matrix normally refreshes all 96 LEDs from an FspTimer.
+// ECLIPSE CORE deliberately does not use matrix.begin()/renderBitmap()
+// because that timer-based path was leaving this project with a blank
+// matrix. Instead, we use the library's public matrix.on()/off()
+// functions and perform the 96-LED multiplexing ourselves.
+//
+// One LED is selected every 100 us:
+//   96 LEDs * 100 us = 9.6 ms/frame ~= 104 Hz.
+//
+// This is fast enough to look continuously illuminated while avoiding
+// the library's FspTimer dependency.
+
+void matrixService() {
+  unsigned long now = micros();
+
+  if ((unsigned long)(now - matrixLastScanMicros) < MATRIX_SCAN_INTERVAL_US) {
+    return;
+  }
+
+  matrixLastScanMicros = now;
+
+  uint8_t index = matrixScanIndex;
+  uint8_t y = index / 12;
+  uint8_t x = index % 12;
+
+  if (matrixFrame[y][x]) {
+    matrix.on(index);
+  } else {
+    matrix.off(index);
+  }
+
+  matrixScanIndex = (index + 1) % 96;
+}
+
+void matrixDelay(unsigned long milliseconds) {
+  unsigned long start = millis();
+
+  while ((unsigned long)(millis() - start) < milliseconds) {
+    matrixService();
+  }
+}
 
 void showMatrix(uint8_t frame[8][12]) {
-  matrix.renderBitmap(frame, 8, 12);
+  memcpy(matrixFrame, frame, sizeof(matrixFrame));
 }
 
 void clearMatrix() {
-  uint8_t blank[8][12] = {};
-  showMatrix(blank);
+  memset(matrixFrame, 0, sizeof(matrixFrame));
 }
 
 void showEclipseLogo() {
