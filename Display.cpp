@@ -47,43 +47,20 @@ void drawLCD(String line0, String line1) {
 // ============================================================
 // LED MATRIX
 // ============================================================
-// The UNO R4 WiFi matrix accepts a 96-bit frame as three
-// uint32_t words. Bit 31 of word 0 is pixel 0, then the bits
-// continue left-to-right, top-to-bottom.
+// This intentionally uses the exact bitmap path from the original
+// working ECLIPSE CORE v2.2 sketch.
 //
-// This matches the Arduino_LED_Matrix library's loadPixels()
-// packing behavior, but avoids the renderBitmap macro entirely.
+// Arduino_LED_Matrix.h defines renderBitmap() as a call to
+// loadPixels(), which performs the library's required 96-bit
+// packing and frame loading.
 
 void showMatrix(uint8_t frame[8][12]) {
-  uint32_t packed[3] = {0, 0, 0};
-
-  for (uint8_t y = 0; y < 8; y++) {
-    for (uint8_t x = 0; x < 12; x++) {
-
-      if (frame[y][x] == 0) {
-        continue;
-      }
-
-      uint8_t pixelIndex = y * 12 + x;
-      uint8_t wordIndex = pixelIndex / 32;
-      uint8_t bitIndex = pixelIndex % 32;
-
-      packed[wordIndex] |=
-        (uint32_t)1 << (31 - bitIndex);
-    }
-  }
-
-  matrix.loadFrame(packed);
+  matrix.renderBitmap(frame, 8, 12);
 }
 
 void clearMatrix() {
-  const uint32_t blank[3] = {
-    0x00000000UL,
-    0x00000000UL,
-    0x00000000UL
-  };
-
-  matrix.loadFrame(blank);
+  uint8_t blank[8][12] = {};
+  showMatrix(blank);
 }
 
 void showEclipseLogo() {
@@ -125,18 +102,13 @@ void showMatrixNumber(uint16_t value) {
 
     for (uint8_t y = 0; y < 5; y++) {
       for (uint8_t x = 0; x < 3; x++) {
-
-        if (
-          digitFont[digits[digit]][y] &
-          (1 << (2 - x))
-        ) {
+        if (digitFont[digits[digit]][y] & (1 << (2 - x))) {
           frame[y + 1][x0 + x] = 1;
         }
       }
     }
   }
 
-  // Animated underline keeps numeric screens visually active.
   uint8_t pulse = (millis() / 140) % 12;
   frame[7][pulse] = 1;
 
