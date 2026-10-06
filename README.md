@@ -1,26 +1,21 @@
-# ECLIPSE CORE
+# ECLIPSE CORE v2.2
 
-ECLIPSE CORE is an expandable embedded system built for the Arduino UNO R4 WiFi, combining a custom LCD interface, built-in LED matrix graphics, sensors, sound, EEPROM storage, and a small collection of games.
+Modular Arduino UNO R4 WiFi embedded system with LCD UI, LED matrix graphics, sensors, sound, EEPROM storage, and games.
 
-## Included
-- Main menu and GAMES submenu
-- ECLIPSE CODE
-- ECLIPSE REACT
-- ECLIPSE MEMORY
-- SNAKE with blinking apple and EEPROM high score
-- Light sensor, distance sensor, scores, and core information apps
-- Rotary encoder input and D9 back button
-- RGB status LED and intentional buzzer feedback
-- UNO R4 WiFi 12x8 Eclipse logo
+Open `ECLIPSE_CORE.ino` in Arduino IDE and select **Arduino UNO R4 WiFi**.
 
-## Hardware
-Target board: **Arduino UNO R4 WiFi**.
+## Modules
+- Config
+- Input
+- Display
+- Sound
+- Storage
+- Menu
+- CoreFeatures
+- Games
+- CodeGame
+- ReactGame
+- MemoryGame
+- SnakeGame
 
-## Arduino IDE
-1. Clone this repository.
-2. Open the repository folder in Arduino IDE.
-3. Open `ECLIPSE_CORE.ino`.
-4. Select **Arduino UNO R4 WiFi** as the board.
-5. Compile and upload.
-
-The project is split into modules so new apps, games, hardware drivers, and storage features can be added without turning the main sketch into one huge file.
+This repository contains the full modular split that was generated from the ECLIPSE CORE v2.2 source. It is intentionally kept as the generated modular version rather than being presented as compiler-verified.
