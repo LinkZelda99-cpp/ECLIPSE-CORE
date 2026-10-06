@@ -32,7 +32,7 @@ void handleBackButton();
 void invalidateLCD(); String fitLCD(String text); void writeLCDLine(uint8_t row, String text); void drawLCD(String line0, String line1);
 void rgbOff(); void rgbRed(); void rgbGreen(); void rgbBlue(); void rgbPurple(); void rgbWhite(); void buzzerOff();
 void soundNavigate(); void soundSelect(); void soundSuccess(); void soundFailure(); void soundScore(); void soundGameOver();
-void showMatrix(uint8_t frame[8][12]); void clearMatrix(); void showEclipseLogo();
+void showMatrix(uint8_t frame[8][12]); void clearMatrix(); void showEclipseLogo(); void showMatrixNumber(uint16_t value);
 void updateEncoder(); void updateEncoderButton(); void updateBackButton(); bool consumeBackPress(); int consumeEncoderDelta(); bool consumeEncoderPress(); void clearEncoderEvents();
 void loadHighScore(); void saveHighScore(); void submitScore(uint16_t score);
 void updateLightSensor(); long readUltrasonic(); void updateDistanceSensor(); void returnToMainMenu(); void returnToGamesMenu();
