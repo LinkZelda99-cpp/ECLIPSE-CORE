@@ -1,0 +1,9 @@
+#pragma once
+#include "Config.h"
+void loadSettings();
+bool soundEnabled();
+bool sensorsEnabled();
+void saveSettings();
+void startSettings();
+void updateSettings();
+void returnToSettings();
