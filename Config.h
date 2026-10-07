@@ -35,6 +35,7 @@ extern const uint8_t SNAKE_WIDTH, SNAKE_HEIGHT, SNAKE_MAX_LENGTH; extern SnakeSe
 
 void handleBackButton();
 void invalidateLCD(); String fitLCD(String text); String fixedNumber(uint16_t value,uint8_t width); void writeLCDLine(uint8_t row,String text); void drawLCD(String line0,String line1);
+void playTone(uint16_t frequency,uint16_t duration);
 void rgbOff(); void rgbRed(); void rgbGreen(); void rgbBlue(); void rgbPurple(); void rgbWhite(); void buzzerOff();
 void soundNavigate(); void soundSelect(); void soundSuccess(); void soundFailure(); void soundScore(); void soundGameOver();
 void showMatrix(uint8_t frame[8][12]); void clearMatrix(); void showEclipseLogo(); void showMatrixNumber(uint16_t value);
