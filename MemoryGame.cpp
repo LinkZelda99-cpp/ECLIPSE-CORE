@@ -35,17 +35,50 @@ void updateMemoryShow(){
   if(memoryShowPosition>0&&millis()-memoryTimer<250)showMemorySymbol(memorySequence[memoryShowPosition-1]);
 }
 
+static void drawMemoryCursor(uint8_t q){
+  // The cursor lives in the empty space around the selected quadrant,
+  // so it cannot be confused with the memorized symbol itself.
+  bool visible=((millis()/250)%2)==0;
+  if(!visible)return;
+
+  switch(q){
+    case 0:
+      matrixFrame[0][0]=1; matrixFrame[0][5]=1;
+      matrixFrame[4][0]=1; matrixFrame[4][5]=1;
+      break;
+    case 1:
+      matrixFrame[0][6]=1; matrixFrame[0][11]=1;
+      matrixFrame[4][6]=1; matrixFrame[4][11]=1;
+      break;
+    case 2:
+      matrixFrame[4][0]=1; matrixFrame[4][5]=1;
+      matrixFrame[7][0]=1; matrixFrame[7][5]=1;
+      break;
+    case 3:
+      matrixFrame[4][6]=1; matrixFrame[4][11]=1;
+      matrixFrame[7][6]=1; matrixFrame[7][11]=1;
+      break;
+  }
+}
+
 void drawMemoryInput(){
   drawLCD("MEMORY","LEVEL "+fixedNumber(memoryScore(),2));
+
   uint8_t f[8][12]={};
   uint8_t q=memoryChoice;
   int x0=(q%2==0)?1:7, y0=(q<2)?1:5;
-  for(int y=y0;y<y0+3&&y<8;y++)for(int x=x0;x<x0+4;x++)f[y][x]=1;
+
+  for(int y=y0;y<y0+3&&y<8;y++)
+    for(int x=x0;x<x0+4;x++)
+      f[y][x]=1;
+
   showMatrix(f);
+  drawMemoryCursor(q);
 }
 
 void updateMemoryInput(){
   drawMemoryInput();
+
   int d=consumeEncoderDelta();
   if(d){
     memoryChoice+=d;
@@ -53,6 +86,7 @@ void updateMemoryInput(){
     while(memoryChoice>=4)memoryChoice-=4;
     soundNavigate();
   }
+
   if(consumeEncoderPress()){
     uint8_t expected=memorySequence[memoryInputPosition];
     if(memoryChoice!=expected){
@@ -60,6 +94,7 @@ void updateMemoryInput(){
       submitGameScore(2,memoryScore());
       state=STATE_MEMORY_RESULT; soundFailure(); rgbRed(); return;
     }
+
     soundSelect(); memoryInputPosition++;
     if(memoryInputPosition>=memoryLevel){
       if(memoryLevel>=MEMORY_MAX_LEVEL){
