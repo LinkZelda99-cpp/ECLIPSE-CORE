@@ -3,7 +3,7 @@
 struct SoluneNote {
   uint16_t frequency;
   uint16_t duration;
-  uint16_t waitBefore;
+  uint16_t gapAfter;
 };
 
 static const SoluneNote soluneTheme[] = {
@@ -88,15 +88,8 @@ void updateSoluneApp(){
     }
 
     const SoluneNote &note = soluneTheme[soluneIndex];
-
-    if(note.waitBefore > 0){
-      soluneNextEvent = now + note.waitBefore;
-      tone(PIN_BUZZER, note.frequency, note.duration);
-    }else{
-      tone(PIN_BUZZER, note.frequency, note.duration);
-      soluneNextEvent = now + note.duration;
-    }
-
+    tone(PIN_BUZZER, note.frequency, note.duration);
+    soluneNextEvent = now + note.duration + note.gapAfter;
     soluneIndex++;
   }
 
