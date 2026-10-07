@@ -1,4 +1,4 @@
-# ECLIPSE CORE v2.3
+# ECLIPSE CORE v2.4
 
 Modular Arduino UNO R4 WiFi embedded system with LCD UI, LED matrix graphics, sensors, sound, EEPROM storage, and games.
 
@@ -66,7 +66,8 @@ The DHT11 is wired to D4 but is not currently used by the application.
 2. LIGHT
 3. DISTANCE
 4. SCORES
-5. CORE INFO
+5. SONGS
+6. CORE INFO
 
 ### Games
 
@@ -74,7 +75,7 @@ The DHT11 is wired to D4 but is not currently used by the application.
 - **ECLIPSE REACT** — reaction-time game.
 - **ECLIPSE MEMORY** — sequence memory game using the LED matrix.
 - **SNAKE** — 12×8 matrix Snake with rotary-encoder turning, blinking apple, collision detection, scoring, and EEPROM high score storage.
-- **SOLUNE** — monophonic passive-buzzer adaptation of the uploaded *Solune (Main Theme) Revamped-02* MIDI, using its upper piano line across the full theme.
+- **SONGS** — built-in music player containing SOLUNE, the uploaded HAVEN MIDI adaptation, and public-domain arrangements of Canon in D and Für Elise.
 
 The D9 back button returns from feature/game screens to the appropriate menu.
 
@@ -107,6 +108,8 @@ ECLIPSE-CORE/
 ├── SnakeGame.h
 ├── SoluneApp.cpp
 ├── SoluneApp.h
+├── SongsApp.cpp
+├── SongsApp.h
 ├── CoreFeatures.cpp
 ├── CoreFeatures.h
 └── README.md
