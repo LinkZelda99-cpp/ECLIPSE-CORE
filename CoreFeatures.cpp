@@ -23,7 +23,7 @@ void updateLightApp(){
     drawLCD("LIGHT","SENSORS OFF");
     clearMatrix();
     rgbBlue();
-    if(consumeEncoderPress())returnToMainMenu();
+    if(consumeEncoderPress()){state=STATE_SENSORS_MENU; lastSensorMenuIndex=-1; invalidateLCD(); lcd.clear(); clearEncoderEvents();}
     return;
   }
   updateLightSensor();
@@ -34,7 +34,7 @@ void updateLightApp(){
   for(int x=0;x<bars;x++)for(int y=3;y<8;y++)frame[y][x]=1;
   showMatrix(frame);
   rgbBlue();
-  if(consumeEncoderPress())returnToMainMenu();
+  if(consumeEncoderPress()){state=STATE_SENSORS_MENU; lastSensorMenuIndex=-1; invalidateLCD(); lcd.clear(); clearEncoderEvents();}
 }
 
 void updateDistanceApp(){
