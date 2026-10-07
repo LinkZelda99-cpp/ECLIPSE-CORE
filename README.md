@@ -1,4 +1,4 @@
-# ECLIPSE CORE v2.2
+# ECLIPSE CORE v2.3
 
 Modular Arduino UNO R4 WiFi embedded system with LCD UI, LED matrix graphics, sensors, sound, EEPROM storage, and games.
 
@@ -74,6 +74,7 @@ The DHT11 is wired to D4 but is not currently used by the application.
 - **ECLIPSE REACT** — reaction-time game.
 - **ECLIPSE MEMORY** — sequence memory game using the LED matrix.
 - **SNAKE** — 12×8 matrix Snake with rotary-encoder turning, blinking apple, collision detection, scoring, and EEPROM high score storage.
+- **SOLUNE** — monophonic passive-buzzer adaptation of the uploaded *Solune (Main Theme) Revamped-02* MIDI, using its upper piano line across the full theme.
 
 The D9 back button returns from feature/game screens to the appropriate menu.
 
@@ -104,6 +105,8 @@ ECLIPSE-CORE/
 ├── MemoryGame.h
 ├── SnakeGame.cpp
 ├── SnakeGame.h
+├── SoluneApp.cpp
+├── SoluneApp.h
 ├── CoreFeatures.cpp
 ├── CoreFeatures.h
 └── README.md
@@ -113,6 +116,6 @@ The old `Core.cpp`, `Core.h`, and obsolete `ECLIPSE-CORE-.ino` implementations a
 
 ## Matrix implementation
 
-ECLIPSE CORE uses the UNO R4 WiFi matrix API's `renderBitmap()` path for its 8×12 application frames. The startup sequence also displays a short X-shaped matrix self-test before entering the application.
+ECLIPSE CORE uses a manual 8×12 matrix scanner so application frames remain continuously refreshed while the main loop runs. The startup sequence also displays a short X-shaped matrix self-test before entering the application.
 
 The repository has been checked for duplicate sketch entry points and the current source structure. It has **not** been represented as compiler-verified because an Arduino UNO R4 WiFi compiler environment is not available in this workspace.
