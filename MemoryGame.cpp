@@ -11,7 +11,7 @@ static uint16_t memoryScore(){
 }
 
 static void playMemoryTone(uint8_t quadrant){
-  tone(PIN_BUZZER, MEMORY_TONES[quadrant & 3], 100);
+  playTone(MEMORY_TONES[quadrant & 3],100);
 }
 
 void startMemoryGame(){
