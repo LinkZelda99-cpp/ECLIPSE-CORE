@@ -100,7 +100,7 @@ void updateSoluneApp(){
   const SoluneNote &note = soluneTheme[soluneIndex];
 
   if(!soluneNoteStarted && elapsed >= note.startMs){
-    tone(PIN_BUZZER, note.frequency, note.duration);
+    playTone(note.frequency, note.duration);
     soluneNoteStarted = true;
     soluneIndex++;
   }
