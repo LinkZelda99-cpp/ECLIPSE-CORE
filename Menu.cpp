@@ -3,11 +3,13 @@
 #include "SongsApp.h"
 #include "SettingsApp.h"
 #include "TemperatureApp.h"
+#include "SensorsApp.h"
 
 void handleBackButton(){
   switch(state){
     case STATE_MENU: break;
     case STATE_GAMES_MENU: returnToMainMenu(); break;
+    case STATE_SENSORS_MENU: returnToMainMenu(); break;
     case STATE_SCORES_MENU: returnToMainMenu(); break;
     case STATE_SCORE_DETAIL:
       state=STATE_SCORES_MENU;
@@ -57,13 +59,11 @@ void updateMainMenu(){
     soundSelect();
     switch(mainMenuIndex){
       case 0: state=STATE_GAMES_MENU; lastGameMenuIndex=-1; break;
-      case 1: state=STATE_LIGHT; break;
-      case 2: state=STATE_DISTANCE; break;
-      case 3: startTemperatureApp(); break;
-      case 4: state=STATE_SCORES_MENU; lastScoreMenuIndex=-1; break;
-      case 5: state=STATE_SONGS; invalidateLCD(); lcd.clear(); break;
-      case 6: startSettings(); break;
-      case 7: state=STATE_CORE_INFO; break;
+      case 1: state=STATE_SENSORS_MENU; lastSensorMenuIndex=-1; break;
+      case 2: state=STATE_SCORES_MENU; lastScoreMenuIndex=-1; break;
+      case 3: state=STATE_SONGS; invalidateLCD(); lcd.clear(); break;
+      case 4: startSettings(); break;
+      case 5: state=STATE_CORE_INFO; break;
     }
     invalidateLCD();
     lcd.clear();
