@@ -14,7 +14,7 @@ extern uint8_t matrixScanIndex;
 extern unsigned long matrixLastScanMicros;
 extern const unsigned long MATRIX_SCAN_INTERVAL_US;
 
-enum AppState { STATE_MENU, STATE_GAMES_MENU, STATE_CODE, STATE_CODE_RESULT, STATE_REACT_WAIT, STATE_REACT_READY, STATE_REACT_RESULT, STATE_MEMORY_SHOW, STATE_MEMORY_INPUT, STATE_MEMORY_RESULT, STATE_SNAKE_READY, STATE_SNAKE, STATE_SNAKE_GAME_OVER, STATE_LIGHT, STATE_DISTANCE, STATE_SCORES_MENU, STATE_SCORE_DETAIL, STATE_SOLUNE, STATE_SONGS, STATE_SETTINGS, STATE_CORE_INFO };
+enum AppState { STATE_MENU, STATE_GAMES_MENU, STATE_CODE, STATE_CODE_RESULT, STATE_REACT_WAIT, STATE_REACT_READY, STATE_REACT_RESULT, STATE_MEMORY_SHOW, STATE_MEMORY_INPUT, STATE_MEMORY_RESULT, STATE_SNAKE_READY, STATE_SNAKE, STATE_SNAKE_GAME_OVER, STATE_LIGHT, STATE_DISTANCE, STATE_SCORES_MENU, STATE_SCORE_DETAIL, STATE_SOLUNE, STATE_SONGS, STATE_SETTINGS, STATE_TEMPERATURE, STATE_CORE_INFO };
 extern AppState state;
 
 extern const char* mainMenuItems[]; extern const uint8_t MAIN_MENU_COUNT; extern int mainMenuIndex; extern int lastMainMenuIndex;
@@ -25,7 +25,7 @@ extern int encoderLastState, encoderAccumulator, encoderDelta;
 extern bool encoderButtonStable, encoderButtonLast; extern unsigned long encoderButtonTimer; extern const unsigned long BUTTON_DEBOUNCE_MS; extern bool encoderPressEvent;
 extern bool backButtonStable, backButtonLast; extern unsigned long backButtonTimer; extern bool backPressEvent;
 extern String lcdCache0, lcdCache1;
-extern int lightReading; extern long distanceReading; extern unsigned long lastLightRead, lastDistanceRead;
+extern int lightReading; extern long distanceReading; extern unsigned long lastLightRead, lastDistanceRead; extern int dhtHumidity, dhtTempC, dhtTempF; extern bool dhtValid; extern unsigned long lastDHTRead;
 
 extern uint8_t codeSecret[4], codeGuess[4], codePosition; extern uint8_t codeAttempts, codeExact, codeClose; extern bool codeWon, codeFinished; extern unsigned long codeResultStarted;
 extern unsigned long reactStarted, reactDelay, reactTime; extern bool reactTooEarly;
@@ -47,4 +47,4 @@ void startCodeGame(); void drawCodeGame(); void evaluateCode(); void updateCodeG
 void startReactGame(); void updateReactWait(); void updateReactReady(); void updateReactResult();
 void startMemoryGame(); void showMemorySymbol(uint8_t symbol); void updateMemoryShow(); void drawMemoryInput(); void updateMemoryInput(); void updateMemoryResult();
 void placeApple(); bool snakeHitsBody(int8_t x,int8_t y,bool growing); void resetSnake(); void startSnakeGame(); void drawSnakeReady(); void drawSnake(); void turnSnake(int turn); void snakeGameOver(); void updateSnakeMovement(); void updateSnake(); void updateSnakeGameOver();
-void updateLightApp(); void updateDistanceApp(); void updateScoresApp(); void updateSoluneApp(); void updateSongsApp(); void returnToSongsMenu(); void startSettings(); void updateSettings();
+void updateLightApp(); void updateDistanceApp(); void startTemperatureApp(); void updateTemperatureApp(); void updateScoresApp(); void updateSoluneApp(); void updateSongsApp(); void returnToSongsMenu(); void startSettings(); void updateSettings();
