@@ -19,6 +19,13 @@ void returnToGamesMenu(){
 }
 
 void updateLightApp(){
+  if(!sensorsEnabled()){
+    drawLCD("LIGHT","SENSORS OFF");
+    clearMatrix();
+    rgbBlue();
+    if(consumeEncoderPress())returnToMainMenu();
+    return;
+  }
   updateLightSensor();
   int percent=map(lightReading,0,1023,0,100);
   drawLCD("LIGHT","LEVEL: "+fixedNumber(percent,3)+"%");
@@ -31,6 +38,13 @@ void updateLightApp(){
 }
 
 void updateDistanceApp(){
+  if(!sensorsEnabled()){
+    drawLCD("DISTANCE","SENSORS OFF");
+    clearMatrix();
+    rgbBlue();
+    if(consumeEncoderPress())returnToMainMenu();
+    return;
+  }
   updateDistanceSensor();
   if(distanceReading<0)drawLCD("DISTANCE","NO ECHO");
   else drawLCD("DISTANCE","VALUE: "+fixedNumber((uint16_t)constrain(distanceReading,0L,9999L),3)+" CM");
