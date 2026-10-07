@@ -14,12 +14,12 @@ extern uint8_t matrixScanIndex;
 extern unsigned long matrixLastScanMicros;
 extern const unsigned long MATRIX_SCAN_INTERVAL_US;
 
-enum AppState { STATE_MENU, STATE_GAMES_MENU, STATE_CODE, STATE_CODE_RESULT, STATE_REACT_WAIT, STATE_REACT_READY, STATE_REACT_RESULT, STATE_MEMORY_SHOW, STATE_MEMORY_INPUT, STATE_MEMORY_RESULT, STATE_SNAKE_READY, STATE_SNAKE, STATE_SNAKE_GAME_OVER, STATE_LIGHT, STATE_DISTANCE, STATE_SCORES_MENU, STATE_SCORE_DETAIL, STATE_SOLUNE, STATE_SONGS, STATE_SETTINGS, STATE_TEMPERATURE, STATE_CORE_INFO };
+enum AppState { STATE_MENU, STATE_GAMES_MENU, STATE_CODE, STATE_CODE_RESULT, STATE_REACT_WAIT, STATE_REACT_READY, STATE_REACT_RESULT, STATE_MEMORY_SHOW, STATE_MEMORY_INPUT, STATE_MEMORY_RESULT, STATE_SNAKE_READY, STATE_SNAKE, STATE_SNAKE_GAME_OVER, STATE_LIGHT, STATE_DISTANCE, STATE_SCORES_MENU, STATE_SCORE_DETAIL, STATE_SOLUNE, STATE_SONGS, STATE_SETTINGS, STATE_SENSORS_MENU, STATE_TEMPERATURE, STATE_CORE_INFO };
 extern AppState state;
 
 extern const char* mainMenuItems[]; extern const uint8_t MAIN_MENU_COUNT; extern int mainMenuIndex; extern int lastMainMenuIndex;
 extern const char* gameMenuItems[]; extern const uint8_t GAME_MENU_COUNT; extern int gameMenuIndex; extern int lastGameMenuIndex;
-extern const char* scoreMenuItems[]; extern const uint8_t SCORE_MENU_COUNT; extern int scoreMenuIndex; extern int lastScoreMenuIndex;
+extern const char* scoreMenuItems[]; extern const uint8_t SCORE_MENU_COUNT; extern int scoreMenuIndex; extern int lastScoreMenuIndex; extern const char* sensorMenuItems[]; extern const uint8_t SENSOR_MENU_COUNT; extern int sensorMenuIndex; extern int lastSensorMenuIndex;
 
 extern int encoderLastState, encoderAccumulator, encoderDelta;
 extern bool encoderButtonStable, encoderButtonLast; extern unsigned long encoderButtonTimer; extern const unsigned long BUTTON_DEBOUNCE_MS; extern bool encoderPressEvent;
