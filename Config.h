@@ -29,7 +29,7 @@ extern int lightReading; extern long distanceReading; extern unsigned long lastL
 
 extern uint8_t codeSecret[4], codeGuess[4], codePosition; extern uint8_t codeAttempts, codeExact, codeClose; extern bool codeWon, codeFinished; extern unsigned long codeResultStarted;
 extern unsigned long reactStarted, reactDelay, reactTime; extern bool reactTooEarly;
-extern const uint8_t MEMORY_MAX_LEVEL; extern uint8_t memorySequence[]; extern uint8_t memoryLevel, memoryShowPosition, memoryInputPosition; extern int memoryChoice; extern bool memoryWon; extern unsigned long memoryTimer;
+extern const uint8_t MEMORY_MAX_LEVEL; extern uint8_t memorySequence[]; extern uint8_t memoryLevel, memoryShowPosition, memoryInputPosition; extern int memoryChoice; extern bool memoryWon, memoryFlashSounded; extern unsigned long memoryTimer;
 struct SnakeSegment { int8_t x; int8_t y; };
 extern const uint8_t SNAKE_WIDTH, SNAKE_HEIGHT, SNAKE_MAX_LENGTH; extern SnakeSegment snake[96]; extern uint8_t snakeLength, snakeDirection; extern const int8_t snakeDX[4], snakeDY[4]; extern int8_t appleX, appleY; extern uint16_t snakeScore; extern unsigned long lastSnakeMove, lastAppleBlink; extern bool appleVisible; extern const unsigned long SNAKE_MOVE_MS, APPLE_BLINK_MS;
 
