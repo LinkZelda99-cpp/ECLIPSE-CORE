@@ -32,7 +32,7 @@ void setup(){
   encoderButtonStable=digitalRead(PIN_ENCODER_SW); encoderButtonLast=encoderButtonStable; encoderButtonTimer=millis();
   backButtonStable=digitalRead(PIN_BACK); backButtonLast=backButtonStable; backButtonTimer=millis();
   showEclipseLogo(); rgbPurple(); drawLCD("    ECLIPSE","      CORE");
-  tone(PIN_BUZZER,660,80); matrixDelay(100); tone(PIN_BUZZER,880,80); matrixDelay(100); tone(PIN_BUZZER,1320,120); matrixDelay(350); buzzerOff();
+  playTone(660,80); matrixDelay(100); playTone(880,80); matrixDelay(100); playTone(1320,120); matrixDelay(350); buzzerOff();
   lcd.clear(); invalidateLCD(); state=STATE_MENU;
 }
 
