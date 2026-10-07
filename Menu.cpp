@@ -15,6 +15,7 @@ void handleBackButton(){
       break;
     case STATE_LIGHT:
     case STATE_DISTANCE:
+    case STATE_SOLUNE:
     case STATE_CORE_INFO:
       returnToMainMenu();
       break;
