@@ -1,23 +1,8 @@
 #include "Input.h"
 
-int encoderLastState = 0;
-int encoderAccumulator = 0;
-int encoderDelta = 0;
+// Input state is defined once in Config.cpp and declared extern in Config.h.
+// Keeping the storage there avoids duplicate-definition linker errors.
 
-bool encoderButtonStable = HIGH;
-bool encoderButtonLast = HIGH;
-unsigned long encoderButtonTimer = 0;
-const unsigned long BUTTON_DEBOUNCE_MS = 35;
-bool encoderPressEvent = false;
-
-bool backButtonStable = HIGH;
-bool backButtonLast = HIGH;
-unsigned long backButtonTimer = 0;
-bool backPressEvent = false;
-
-// Standard quadrature transition table.
-// We accumulate four valid quarter-steps into one logical encoder detent.
-// This is deliberately tolerant of mechanical bounce.
 static const int8_t encoderTransitionTable[16] = {
    0, -1,  1,  0,
    1,  0,  0, -1,
@@ -101,6 +86,6 @@ void clearEncoderEvents(){
   encoderPressEvent=false;
   backPressEvent=false;
 
-  // The main sketch initializes encoderLastState from the real pins.
-  // Do not reset it to an arbitrary quadrature state here.
+  // The main sketch synchronizes encoderLastState with the real pins.
+  // Do not create a second copy of the input state here.
 }
