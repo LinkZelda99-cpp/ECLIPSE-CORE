@@ -15,6 +15,7 @@
 #include "SongsApp.h"
 #include "SettingsApp.h"
 #include "TemperatureApp.h"
+#include "SensorsApp.h"
 #include "Sensors/Sensors.cpp"
 
 void setup(){
@@ -41,7 +42,7 @@ void loop(){
   matrixService(); updateEncoder(); updateEncoderButton(); updateBackButton();
   if(consumeBackPress()){handleBackButton();return;}
   switch(state){
-    case STATE_MENU:updateMainMenu();break; case STATE_GAMES_MENU:updateGamesMenu();break;
+    case STATE_MENU:updateMainMenu();break; case STATE_SENSORS_MENU:updateSensorsMenu();break; case STATE_GAMES_MENU:updateGamesMenu();break;
     case STATE_CODE:updateCodeGame();break; case STATE_CODE_RESULT:updateCodeResult();break;
     case STATE_REACT_WAIT:updateReactWait();break; case STATE_REACT_READY:updateReactReady();break; case STATE_REACT_RESULT:updateReactResult();break;
     case STATE_MEMORY_SHOW:updateMemoryShow();break; case STATE_MEMORY_INPUT:updateMemoryInput();break; case STATE_MEMORY_RESULT:updateMemoryResult();break;
