@@ -2,6 +2,7 @@
 #include "SoluneApp.h"
 #include "SongsApp.h"
 #include "SettingsApp.h"
+#include "TemperatureApp.h"
 
 void handleBackButton(){
   switch(state){
@@ -17,6 +18,7 @@ void handleBackButton(){
       break;
     case STATE_LIGHT:
     case STATE_DISTANCE:
+    case STATE_TEMPERATURE:
       returnToMainMenu(); break;
     case STATE_SOLUNE:
       returnToSongsMenu(); break;
@@ -57,10 +59,11 @@ void updateMainMenu(){
       case 0: state=STATE_GAMES_MENU; lastGameMenuIndex=-1; break;
       case 1: state=STATE_LIGHT; break;
       case 2: state=STATE_DISTANCE; break;
-      case 3: state=STATE_SCORES_MENU; lastScoreMenuIndex=-1; break;
-      case 4: state=STATE_SONGS; invalidateLCD(); lcd.clear(); break;
-      case 5: startSettings(); break;
-      case 6: state=STATE_CORE_INFO; break;
+      case 3: startTemperatureApp(); break;
+      case 4: state=STATE_SCORES_MENU; lastScoreMenuIndex=-1; break;
+      case 5: state=STATE_SONGS; invalidateLCD(); lcd.clear(); break;
+      case 6: startSettings(); break;
+      case 7: state=STATE_CORE_INFO; break;
     }
     invalidateLCD();
     lcd.clear();
