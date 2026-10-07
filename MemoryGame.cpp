@@ -1,203 +1,206 @@
 #include "MemoryGame.h"
 
 static uint16_t memoryScore(){
-  if(memoryWon&&memoryLevel>=MEMORY_MAX_LEVEL)return MEMORY_MAX_LEVEL;
+  if(memoryWon && memoryLevel>=MEMORY_MAX_LEVEL)return MEMORY_MAX_LEVEL;
   return memoryLevel>0?memoryLevel-1:0;
 }
 
 void startMemoryGame(){
   for(uint8_t i=0;i<MEMORY_MAX_LEVEL;i++)memorySequence[i]=random(0,4);
+
   memoryLevel=1;
   memoryShowPosition=0;
   memoryInputPosition=0;
   memoryChoice=0;
   memoryWon=false;
   memoryTimer=millis();
+
   state=STATE_MEMORY_SHOW;
   rgbPurple();
   clearEncoderEvents();
 }
 
-void showMemorySymbol(uint8_t s){
-  uint8_t f[8][12]={};
+// Four distinct symbols. They are deliberately smaller than their
+// quadrants so the selection cursor can never be mistaken for them.
+static void drawMemorySymbols(uint8_t frame[8][12]){
+  // 0 = single square
+  frame[1][2]=1; frame[1][3]=1;
+  frame[2][2]=1; frame[2][3]=1;
 
-  switch(s){
+  // 1 = horizontal bar
+  frame[1][8]=1; frame[1][9]=1; frame[1][10]=1;
+
+  // 2 = triangle/arrow
+  frame[5][2]=1; frame[6][1]=1; frame[6][2]=1; frame[6][3]=1;
+
+  // 3 = plus
+  frame[5][8]=1; frame[5][9]=1;
+  frame[4][9]=1; frame[6][9]=1;
+}
+
+void showMemorySymbol(uint8_t symbol){
+  uint8_t frame[8][12]={};
+
+  switch(symbol){
     case 0:
-      for(int y=1;y<4;y++)for(int x=1;x<5;x++)f[y][x]=1;
+      frame[1][2]=1; frame[1][3]=1;
+      frame[2][2]=1; frame[2][3]=1;
       break;
+
     case 1:
-      for(int y=1;y<4;y++)for(int x=7;x<11;x++)f[y][x]=1;
+      frame[1][8]=1; frame[1][9]=1; frame[1][10]=1;
       break;
+
     case 2:
-      for(int y=5;y<8;y++)for(int x=1;x<5;x++)f[y][x]=1;
+      frame[5][2]=1;
+      frame[6][1]=1; frame[6][2]=1; frame[6][3]=1;
       break;
+
     case 3:
-      for(int y=5;y<8;y++)for(int x=7;x<11;x++)f[y][x]=1;
+      frame[5][8]=1; frame[5][9]=1;
+      frame[4][9]=1; frame[6][9]=1;
       break;
   }
 
-  showMatrix(f);
+  showMatrix(frame);
 }
 
 void updateMemoryShow(){
-  drawLCD("MEMORY","LEVEL "+fixedNumber(memoryScore(),2));
+  drawLCD("MEMORY","REMEMBER "+fixedNumber(memoryLevel,2));
 
   if(memoryShowPosition>=memoryLevel){
+    // Give the player a short clean transition before input.
     memoryInputPosition=0;
     memoryChoice=0;
+    memoryTimer=millis();
     state=STATE_MEMORY_INPUT;
+    return;
+  }
+
+  // Each symbol gets a clear ON period followed by a short blank
+  // period. The sound occurs exactly when the symbol appears.
+  unsigned long elapsed=millis()-memoryTimer;
+
+  if(elapsed<500){
+    showMemorySymbol(memorySequence[memoryShowPosition]);
+    return;
+  }
+
+  if(elapsed<700){
     clearMatrix();
     return;
   }
 
-  if(millis()-memoryTimer>=650){
-    uint8_t s=memorySequence[memoryShowPosition];
+  memoryShowPosition++;
+  memoryTimer=millis();
 
-    showMemorySymbol(s);
-    tone(PIN_BUZZER,700+s*250,100);
-
-    memoryShowPosition++;
-    memoryTimer=millis();
-  }
-
-  // Keep the most recently shown symbol visible briefly.
-  if(
-    memoryShowPosition>0 &&
-    millis()-memoryTimer<250
-  ){
-    showMemorySymbol(memorySequence[memoryShowPosition-1]);
+  if(memoryShowPosition<memoryLevel){
+    showMemorySymbol(memorySequence[memoryShowPosition]);
+    tone(PIN_BUZZER,700+memorySequence[memoryShowPosition]*250,100);
   }
 }
 
-// A very obvious cursor: a blinking rectangular frame around the
-// selected quadrant. The memorized symbol itself never changes,
-// so the player can clearly distinguish "what to remember" from
-// "what I am currently selecting".
+// Four small corner marks around the selected quadrant.
+// They are intentionally steady for most of the time and only
+// blink softly every 700 ms — no moving animation.
 static void drawMemoryCursor(uint8_t q){
-  if(((millis()/350)%2)!=0)return;
+  if(((millis()/700)&1)!=0)return;
 
   int x0=(q%2==0)?0:6;
   int x1=x0+5;
   int y0=(q<2)?0:4;
-  int y1=(q<2)?4:7;
+  int y1=(q<2)?3:7;
 
-  // Top and bottom edges.
-  for(int x=x0;x<=x1;x++){
-    matrixFrame[y0][x]=1;
-    matrixFrame[y1][x]=1;
-  }
+  // Only four corners. Nothing crosses the symbol.
+  matrixFrame[y0][x0]=1;
+  matrixFrame[y0][x0+1]=1;
 
-  // Side edges.
-  for(int y=y0;y<=y1;y++){
-    matrixFrame[y][x0]=1;
-    matrixFrame[y][x1]=1;
-  }
+  matrixFrame[y0][x1]=1;
+  matrixFrame[y0][x1-1]=1;
 
-  // Moving cursor spark makes encoder movement feel alive.
-  uint8_t phase=(millis()/90)%16;
-  int sx=x0;
-  int sy=y0;
+  matrixFrame[y1][x0]=1;
+  matrixFrame[y1][x0+1]=1;
 
-  switch(phase){
-    case 0: sx=x0+1; sy=y0; break;
-    case 1: sx=x0+2; sy=y0; break;
-    case 2: sx=x0+3; sy=y0; break;
-    case 3: sx=x0+4; sy=y0; break;
-    case 4: sx=x1; sy=y0+1; break;
-    case 5: sx=x1; sy=y0+2; break;
-    case 6: sx=x1; sy=y0+3; break;
-    case 7: sx=x1; sy=y1; break;
-    case 8: sx=x0+4; sy=y1; break;
-    case 9: sx=x0+3; sy=y1; break;
-    case 10: sx=x0+2; sy=y1; break;
-    case 11: sx=x0+1; sy=y1; break;
-    case 12: sx=x0; sy=y1-1; break;
-    case 13: sx=x0; sy=y1-2; break;
-    case 14: sx=x0; sy=y1-3; break;
-    default: sx=x0; sy=y1-4; break;
-  }
-
-  matrixFrame[sy][sx]=1;
+  matrixFrame[y1][x1]=1;
+  matrixFrame[y1][x1-1]=1;
 }
 
 void drawMemoryInput(){
-  drawLCD("MEMORY","LEVEL "+fixedNumber(memoryScore(),2));
+  drawLCD(
+    "MEMORY",
+    "SELECT "+String(memoryChoice+1)+"/4"
+  );
 
-  uint8_t f[8][12]={};
-  uint8_t q=memoryChoice;
+  uint8_t frame[8][12]={};
 
-  int x0=(q%2==0)?1:7;
-  int y0=(q<2)?1:5;
+  // All four choices stay visible throughout the input phase.
+  drawMemorySymbols(frame);
 
-  // Draw the four selectable symbols.
-  for(int y=y0;y<y0+3&&y<8;y++){
-    for(int x=x0;x<x0+4;x++){
-      f[y][x]=1;
-    }
-  }
+  // Cursor is drawn last, but only in the empty corner pixels.
+  drawMemoryCursor(memoryChoice);
 
-  showMatrix(f);
-
-  // Add the cursor after the game board is drawn, so the cursor
-  // can never become part of the remembered symbol.
-  drawMemoryCursor(q);
+  showMatrix(frame);
 }
 
 void updateMemoryInput(){
-  // Consume encoder movement BEFORE drawing so the visual cursor
-  // responds on the same loop iteration.
-  int d=consumeEncoderDelta();
+  // IMPORTANT: read the encoder before drawing. This makes the
+  // selected quadrant update on the same loop iteration.
+  int delta=consumeEncoderDelta();
 
-  if(d){
-    // Treat each encoder event as one deliberate quadrant move.
-    // Direction is preserved, and wraparound makes all four choices
-    // equally reachable.
-    memoryChoice += (d>0)?1:-1;
+  if(delta!=0){
+    // The encoder can occasionally deliver more than one detent
+    // between loop iterations. Apply every detent instead of
+    // collapsing them into a single movement.
+    while(delta>0){
+      memoryChoice++;
+      if(memoryChoice>3)memoryChoice=0;
+      soundNavigate();
+      delta--;
+    }
 
-    if(memoryChoice<0)memoryChoice=3;
-    if(memoryChoice>3)memoryChoice=0;
-
-    soundNavigate();
+    while(delta<0){
+      memoryChoice--;
+      if(memoryChoice<0)memoryChoice=3;
+      soundNavigate();
+      delta++;
+    }
   }
 
   drawMemoryInput();
 
-  if(consumeEncoderPress()){
-    uint8_t expected=memorySequence[memoryInputPosition];
+  if(!consumeEncoderPress())return;
 
-    if(memoryChoice!=expected){
-      memoryWon=false;
+  uint8_t expected=memorySequence[memoryInputPosition];
+
+  if(memoryChoice!=expected){
+    memoryWon=false;
+    submitGameScore(2,memoryScore());
+    state=STATE_MEMORY_RESULT;
+    soundFailure();
+    rgbRed();
+    return;
+  }
+
+  soundSelect();
+  memoryInputPosition++;
+
+  if(memoryInputPosition>=memoryLevel){
+    if(memoryLevel>=MEMORY_MAX_LEVEL){
+      memoryWon=true;
       submitGameScore(2,memoryScore());
       state=STATE_MEMORY_RESULT;
-      soundFailure();
-      rgbRed();
+      soundSuccess();
+      rgbGreen();
       return;
     }
 
-    // Correct selection: keep the sounds because they give useful
-    // timing feedback without obscuring the visual game state.
-    soundSelect();
-
-    memoryInputPosition++;
-
-    if(memoryInputPosition>=memoryLevel){
-      if(memoryLevel>=MEMORY_MAX_LEVEL){
-        memoryWon=true;
-        submitGameScore(2,memoryScore());
-        state=STATE_MEMORY_RESULT;
-        soundSuccess();
-        rgbGreen();
-        return;
-      }
-
-      memoryLevel++;
-      memoryShowPosition=0;
-      memoryInputPosition=0;
-      memoryChoice=0;
-      memoryTimer=millis();
-      state=STATE_MEMORY_SHOW;
-      soundSuccess();
-    }
+    memoryLevel++;
+    memoryShowPosition=0;
+    memoryInputPosition=0;
+    memoryChoice=0;
+    memoryTimer=millis();
+    state=STATE_MEMORY_SHOW;
+    soundSuccess();
   }
 }
 
@@ -212,7 +215,5 @@ void updateMemoryResult(){
   if(memoryWon)rgbGreen();
   else rgbRed();
 
-  if(consumeEncoderPress()){
-    returnToGamesMenu();
-  }
+  if(consumeEncoderPress())returnToGamesMenu();
 }
