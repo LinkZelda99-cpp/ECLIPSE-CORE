@@ -62,6 +62,10 @@ void updateTemperatureApp(){
   rgbBlue();
 
   if(consumeEncoderPress()){
-    returnToMainMenu();
+    state=STATE_SENSORS_MENU;
+    lastSensorMenuIndex=-1;
+    invalidateLCD();
+    lcd.clear();
+    clearEncoderEvents();
   }
 }
