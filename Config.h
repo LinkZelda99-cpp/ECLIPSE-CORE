@@ -14,7 +14,7 @@ extern uint8_t matrixScanIndex;
 extern unsigned long matrixLastScanMicros;
 extern const unsigned long MATRIX_SCAN_INTERVAL_US;
 
-enum AppState { STATE_MENU, STATE_GAMES_MENU, STATE_CODE, STATE_CODE_RESULT, STATE_REACT_WAIT, STATE_REACT_READY, STATE_REACT_RESULT, STATE_MEMORY_SHOW, STATE_MEMORY_INPUT, STATE_MEMORY_RESULT, STATE_SNAKE_READY, STATE_SNAKE, STATE_SNAKE_GAME_OVER, STATE_LIGHT, STATE_DISTANCE, STATE_SCORES_MENU, STATE_SCORE_DETAIL, STATE_CORE_INFO };
+enum AppState { STATE_MENU, STATE_GAMES_MENU, STATE_CODE, STATE_CODE_RESULT, STATE_REACT_WAIT, STATE_REACT_READY, STATE_REACT_RESULT, STATE_MEMORY_SHOW, STATE_MEMORY_INPUT, STATE_MEMORY_RESULT, STATE_SNAKE_READY, STATE_SNAKE, STATE_SNAKE_GAME_OVER, STATE_LIGHT, STATE_DISTANCE, STATE_SCORES_MENU, STATE_SCORE_DETAIL, STATE_SOLUNE, STATE_CORE_INFO };
 extern AppState state;
 
 extern const char* mainMenuItems[]; extern const uint8_t MAIN_MENU_COUNT; extern int mainMenuIndex; extern int lastMainMenuIndex;
@@ -46,4 +46,4 @@ void startCodeGame(); void drawCodeGame(); void evaluateCode(); void updateCodeG
 void startReactGame(); void updateReactWait(); void updateReactReady(); void updateReactResult();
 void startMemoryGame(); void showMemorySymbol(uint8_t symbol); void updateMemoryShow(); void drawMemoryInput(); void updateMemoryInput(); void updateMemoryResult();
 void placeApple(); bool snakeHitsBody(int8_t x,int8_t y,bool growing); void resetSnake(); void startSnakeGame(); void drawSnakeReady(); void drawSnake(); void turnSnake(int turn); void snakeGameOver(); void updateSnakeMovement(); void updateSnake(); void updateSnakeGameOver();
-void updateLightApp(); void updateDistanceApp(); void updateScoresApp(); void updateCoreInfo();
+void updateLightApp(); void updateDistanceApp(); void updateScoresApp(); void updateSoluneApp(); void updateCoreInfo();
