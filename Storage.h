@@ -1,3 +1,5 @@
 #pragma once
 #include "Config.h"
-void loadHighScore(); void saveHighScore(); void submitScore(uint16_t score);
+void loadHighScores();
+uint16_t getHighScore(uint8_t game);
+void submitGameScore(uint8_t game,uint16_t score);
