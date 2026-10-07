@@ -17,7 +17,7 @@ void updateReactWait(){
   }
   if(millis()-reactStarted>=reactDelay){
     state=STATE_REACT_READY; reactStarted=millis();
-    drawLCD("GO!","PRESS NOW!"); showMatrixNumber(0); rgbGreen(); tone(PIN_BUZZER,1800,80);
+    drawLCD("GO!","PRESS NOW!"); showMatrixNumber(0); rgbGreen(); playTone(1800,80);
   }
 }
 
