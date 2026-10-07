@@ -42,7 +42,7 @@ void showMatrix(uint8_t frame[8][12]); void clearMatrix(); void showEclipseLogo(
 void updateEncoder(); void updateEncoderButton(); void updateBackButton(); bool consumeBackPress(); int consumeEncoderDelta(); bool consumeEncoderPress(); void clearEncoderEvents();
 void loadHighScores(); uint16_t getHighScore(uint8_t game); void submitGameScore(uint8_t game,uint16_t score);
 bool soundEnabled(); bool sensorsEnabled(); void loadSettings(); bool readDHT11(); void updateLightSensor(); long readUltrasonic(); void updateDistanceSensor(); void returnToMainMenu(); void returnToGamesMenu();
-void drawMainMenu(); void updateMainMenu(); void drawGamesMenu(); void updateGamesMenu(); void drawScoresMenu(); void updateScoresMenu(); void drawScoreDetail(); void updateScoreDetail();
+void drawMainMenu(); void updateMainMenu(); void drawSensorsMenu(); void updateSensorsMenu(); void drawGamesMenu(); void updateGamesMenu(); void drawScoresMenu(); void updateScoresMenu(); void drawScoreDetail(); void updateScoreDetail();
 void startCodeGame(); void drawCodeGame(); void evaluateCode(); void updateCodeGame(); void updateCodeResult();
 void startReactGame(); void updateReactWait(); void updateReactReady(); void updateReactResult();
 void startMemoryGame(); void showMemorySymbol(uint8_t symbol); void updateMemoryShow(); void drawMemoryInput(); void updateMemoryInput(); void updateMemoryResult();
