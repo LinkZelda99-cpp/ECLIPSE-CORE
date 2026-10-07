@@ -42,7 +42,7 @@ void updateDistanceApp(){
     drawLCD("DISTANCE","SENSORS OFF");
     clearMatrix();
     rgbBlue();
-    if(consumeEncoderPress())returnToMainMenu();
+    if(consumeEncoderPress()){state=STATE_SENSORS_MENU; lastSensorMenuIndex=-1; invalidateLCD(); lcd.clear(); clearEncoderEvents();}
     return;
   }
   updateDistanceSensor();
@@ -58,7 +58,7 @@ void updateDistanceApp(){
   }
   showMatrix(frame);
   rgbBlue();
-  if(consumeEncoderPress())returnToMainMenu();
+  if(consumeEncoderPress()){state=STATE_SENSORS_MENU; lastSensorMenuIndex=-1; invalidateLCD(); lcd.clear(); clearEncoderEvents();}
 }
 
 void updateScoresApp(){
