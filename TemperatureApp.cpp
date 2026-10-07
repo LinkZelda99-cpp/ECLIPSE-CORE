@@ -1,18 +1,20 @@
 #include "TemperatureApp.h"
 
 namespace {
-const unsigned long DHT_READ_INTERVAL_MS=2200;
+const unsigned long DHT_READ_INTERVAL_MS=2500;
 const unsigned long DISPLAY_SWAP_MS=1800;
 bool showTemperature=true;
 unsigned long lastDisplaySwap=0;
+bool dhtHasAttempted=false;
 }
 
 void startTemperatureApp(){
   state=STATE_TEMPERATURE;
   showTemperature=true;
   lastDisplaySwap=millis();
-  lastDHTRead=0;
+  lastDHTRead=millis();
   dhtValid=false;
+  dhtHasAttempted=false;
   invalidateLCD();
   lcd.clear();
   clearEncoderEvents();
@@ -27,19 +29,28 @@ void updateTemperatureApp(){
     return;
   }
 
-  if(millis()-lastDHTRead>=DHT_READ_INTERVAL_MS || lastDHTRead==0){
+  if((unsigned long)(millis()-lastDHTRead)>=DHT_READ_INTERVAL_MS){
     lastDHTRead=millis();
+    dhtHasAttempted=true;
     readDHT11();
   }
 
-  if(millis()-lastDisplaySwap>=DISPLAY_SWAP_MS){
+  if((unsigned long)(millis()-lastDisplaySwap)>=DISPLAY_SWAP_MS){
     lastDisplaySwap=millis();
     showTemperature=!showTemperature;
   }
 
-  if(!dhtValid){
-    drawLCD("TEMP/HUMIDITY","READING...");
+  if(!dhtHasAttempted){
+    drawLCD("TEMP/HUMIDITY","STARTING...");
     clearMatrix();
+  }else if(!dhtValid){
+    drawLCD("TEMP/HUMIDITY","SENSOR ERROR");
+    uint8_t frame[8][12]={};
+    for(uint8_t i=0;i<8;i++){
+      frame[i][i]=1;
+      frame[i][11-i]=1;
+    }
+    showMatrix(frame);
   }else if(showTemperature){
     drawLCD("TEMPERATURE","VALUE: "+String(dhtTempF)+" F");
     showMatrixNumber((uint16_t)constrain(dhtTempF,0,9999));
