@@ -19,5 +19,5 @@ String lcdCache0="",lcdCache1="";
 int lightReading=0; long distanceReading=-1; unsigned long lastLightRead=0,lastDistanceRead=0;
 uint8_t codeSecret[4],codeGuess[4],codePosition=0,codeAttempts=0,codeExact=0,codeClose=0; bool codeWon=false,codeFinished=false; unsigned long codeResultStarted=0;
 unsigned long reactStarted=0,reactDelay=0,reactTime=0; bool reactTooEarly=false;
-const uint8_t MEMORY_MAX_LEVEL=20; uint8_t memorySequence[MEMORY_MAX_LEVEL],memoryLevel=1,memoryShowPosition=0,memoryInputPosition=0; int memoryChoice=0; bool memoryWon=false; unsigned long memoryTimer=0;
+const uint8_t MEMORY_MAX_LEVEL=20; uint8_t memorySequence[MEMORY_MAX_LEVEL],memoryLevel=1,memoryShowPosition=0,memoryInputPosition=0; int memoryChoice=0; bool memoryWon=false,memoryFlashSounded=false; unsigned long memoryTimer=0;
 const uint8_t SNAKE_WIDTH=12,SNAKE_HEIGHT=8,SNAKE_MAX_LENGTH=96; SnakeSegment snake[96]; uint8_t snakeLength=0,snakeDirection=1; const int8_t snakeDX[4]={0,1,0,-1},snakeDY[4]={-1,0,1,0}; int8_t appleX=8,appleY=4; uint16_t snakeScore=0; unsigned long lastSnakeMove=0,lastAppleBlink=0; bool appleVisible=true; const unsigned long SNAKE_MOVE_MS=425,APPLE_BLINK_MS=300;
