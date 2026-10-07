@@ -6,7 +6,7 @@ static uint16_t memoryScore(){
 }
 
 void startMemoryGame(){
-  for(uint8_t i=0;i<MEMORY_MAX_LEVEL;i++)memorySequence[i]=random(0,4);
+  for(uint8_t i=0;i<MEMORY_MAX_LEVEL;i++) memorySequence[i]=random(0,4);
 
   memoryLevel=1;
   memoryShowPosition=0;
@@ -20,56 +20,75 @@ void startMemoryGame(){
   clearEncoderEvents();
 }
 
-// Four distinct symbols. They are deliberately smaller than their
-// quadrants so the selection cursor can never be mistaken for them.
-static void drawMemorySymbols(uint8_t frame[8][12]){
-  // 0 = single square
-  frame[1][2]=1; frame[1][3]=1;
-  frame[2][2]=1; frame[2][3]=1;
+// Draw the four identical rectangular memory targets.
+// The rectangles are the game itself; the cursor is added separately.
+static void drawMemoryBoard(uint8_t frame[8][12]){
+  // Top-left
+  for(int y=1;y<=3;y++) for(int x=1;x<=4;x++) frame[y][x]=1;
 
-  // 1 = horizontal bar
-  frame[1][8]=1; frame[1][9]=1; frame[1][10]=1;
+  // Top-right
+  for(int y=1;y<=3;y++) for(int x=7;x<=10;x++) frame[y][x]=1;
 
-  // 2 = triangle/arrow
-  frame[5][2]=1; frame[6][1]=1; frame[6][2]=1; frame[6][3]=1;
+  // Bottom-left
+  for(int y=5;y<=7;y++) for(int x=1;x<=4;x++) frame[y][x]=1;
 
-  // 3 = plus
-  frame[5][8]=1; frame[5][9]=1;
-  frame[4][9]=1; frame[6][9]=1;
+  // Bottom-right
+  for(int y=5;y<=7;y++) for(int x=7;x<=10;x++) frame[y][x]=1;
 }
 
 void showMemorySymbol(uint8_t symbol){
   uint8_t frame[8][12]={};
 
+  // During the memorize phase, light only the selected rectangle.
   switch(symbol){
     case 0:
-      frame[1][2]=1; frame[1][3]=1;
-      frame[2][2]=1; frame[2][3]=1;
+      for(int y=1;y<=3;y++) for(int x=1;x<=4;x++) frame[y][x]=1;
       break;
 
     case 1:
-      frame[1][8]=1; frame[1][9]=1; frame[1][10]=1;
+      for(int y=1;y<=3;y++) for(int x=7;x<=10;x++) frame[y][x]=1;
       break;
 
     case 2:
-      frame[5][2]=1;
-      frame[6][1]=1; frame[6][2]=1; frame[6][3]=1;
+      for(int y=5;y<=7;y++) for(int x=1;x<=4;x++) frame[y][x]=1;
       break;
 
     case 3:
-      frame[5][8]=1; frame[5][9]=1;
-      frame[4][9]=1; frame[6][9]=1;
+      for(int y=5;y<=7;y++) for(int x=7;x<=10;x++) frame[y][x]=1;
       break;
   }
 
   showMatrix(frame);
 }
 
+static void drawMemoryCursor(uint8_t q){
+  // Gentle blink: slow enough to be noticeable, not distracting.
+  if(((millis()/700)&1)!=0)return;
+
+  int x0=(q%2==0)?0:6;
+  int x1=x0+5;
+  int y0=(q<2)?0:4;
+  int y1=(q<2)?4:7;
+
+  // Four corner brackets. They sit OUTSIDE the filled rectangle,
+  // so the cursor cannot be mistaken for part of the remembered target.
+  matrixFrame[y0][x0]=1;
+  matrixFrame[y0][x0+1]=1;
+
+  matrixFrame[y0][x1]=1;
+  matrixFrame[y0][x1-1]=1;
+
+  matrixFrame[y1][x0]=1;
+  matrixFrame[y1][x0+1]=1;
+
+  matrixFrame[y1][x1]=1;
+  matrixFrame[y1][x1-1]=1;
+}
+
 void updateMemoryShow(){
   drawLCD("MEMORY","REMEMBER "+fixedNumber(memoryLevel,2));
 
   if(memoryShowPosition>=memoryLevel){
-    // Give the player a short clean transition before input.
     memoryInputPosition=0;
     memoryChoice=0;
     memoryTimer=millis();
@@ -77,15 +96,15 @@ void updateMemoryShow(){
     return;
   }
 
-  // Each symbol gets a clear ON period followed by a short blank
-  // period. The sound occurs exactly when the symbol appears.
   unsigned long elapsed=millis()-memoryTimer;
 
+  // Show one whole rectangle for 500 ms.
   if(elapsed<500){
     showMemorySymbol(memorySequence[memoryShowPosition]);
     return;
   }
 
+  // Brief blank gap between sequence items.
   if(elapsed<700){
     clearMatrix();
     return;
@@ -100,57 +119,22 @@ void updateMemoryShow(){
   }
 }
 
-// Four small corner marks around the selected quadrant.
-// They are intentionally steady for most of the time and only
-// blink softly every 700 ms — no moving animation.
-static void drawMemoryCursor(uint8_t q){
-  if(((millis()/700)&1)!=0)return;
-
-  int x0=(q%2==0)?0:6;
-  int x1=x0+5;
-  int y0=(q<2)?0:4;
-  int y1=(q<2)?3:7;
-
-  // Only four corners. Nothing crosses the symbol.
-  matrixFrame[y0][x0]=1;
-  matrixFrame[y0][x0+1]=1;
-
-  matrixFrame[y0][x1]=1;
-  matrixFrame[y0][x1-1]=1;
-
-  matrixFrame[y1][x0]=1;
-  matrixFrame[y1][x0+1]=1;
-
-  matrixFrame[y1][x1]=1;
-  matrixFrame[y1][x1-1]=1;
-}
-
 void drawMemoryInput(){
-  drawLCD(
-    "MEMORY",
-    "SELECT "+String(memoryChoice+1)+"/4"
-  );
+  drawLCD("MEMORY","SELECT "+String(memoryChoice+1)+"/4");
 
   uint8_t frame[8][12]={};
-
-  // All four choices stay visible throughout the input phase.
-  drawMemorySymbols(frame);
-
-  // Cursor is drawn last, but only in the empty corner pixels.
-  drawMemoryCursor(memoryChoice);
-
+  drawMemoryBoard(frame);
   showMatrix(frame);
+
+  // Add cursor AFTER the board so the selection indicator is always
+  // visually separate from the four rectangles.
+  drawMemoryCursor(memoryChoice);
 }
 
 void updateMemoryInput(){
-  // IMPORTANT: read the encoder before drawing. This makes the
-  // selected quadrant update on the same loop iteration.
   int delta=consumeEncoderDelta();
 
   if(delta!=0){
-    // The encoder can occasionally deliver more than one detent
-    // between loop iterations. Apply every detent instead of
-    // collapsing them into a single movement.
     while(delta>0){
       memoryChoice++;
       if(memoryChoice>3)memoryChoice=0;
