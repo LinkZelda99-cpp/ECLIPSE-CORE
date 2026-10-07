@@ -57,20 +57,18 @@ The project targets the Arduino UNO R4 WiFi and its built-in 12×8 LED matrix. M
 | A4 | LCD D6 |
 | A5 | LCD D7 |
 
-The DHT11 is connected through P4 (D4) and is used by the TEMP/HUMIDITY app.
+The DHT11 is connected through P4 (D4) and is used by the TEMP/HUMIDITY app. If the DHT11 does not respond, the app shows SENSOR ERROR and retries automatically.
 
 ## Features
 
 ### Main menu
 
 1. GAMES
-2. LIGHT
-3. DISTANCE
-4. TEMP/HUMIDITY
-5. SCORES
-6. SONGS
-7. SETTINGS
-8. CORE INFO
+2. SENSORS
+3. SCORES
+4. SONGS
+5. SETTINGS
+6. CORE INFO
 
 ### Games
 
@@ -79,6 +77,7 @@ The DHT11 is connected through P4 (D4) and is used by the TEMP/HUMIDITY app.
 - **ECLIPSE MEMORY** — sequence memory game using the LED matrix.
 - **SNAKE** — 12×8 matrix Snake with rotary-encoder turning, blinking apple, collision detection, scoring, and EEPROM high score storage.
 - **SONGS** — built-in music player containing SOLUNE, the uploaded HAVEN MIDI adaptation, and public-domain arrangements of Canon in D and Für Elise.
+- **SENSORS** — submenu containing Light, Distance, and Temperature/Humidity sensor apps.
 - **TEMP/HUMIDITY** — reads the DHT11 on P4/D4 and alternates between temperature in °F and relative humidity.
 - **SETTINGS** — persistent Sound and Sensors toggles stored in EEPROM. Sound mute applies to UI/game/song audio; disabling sensors prevents the Light and Distance sensor reads.
 
@@ -117,6 +116,8 @@ ECLIPSE-CORE/
 ├── SongsApp.h
 ├── SettingsApp.cpp
 ├── SettingsApp.h
+├── SensorsApp.cpp
+├── SensorsApp.h
 ├── TemperatureApp.cpp
 ├── TemperatureApp.h
 ├── CoreFeatures.cpp
