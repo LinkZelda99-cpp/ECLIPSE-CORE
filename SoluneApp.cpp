@@ -113,6 +113,6 @@ void updateSoluneApp(){
   if(consumeEncoderPress()){
     buzzerOff();
     solunePlaying = false;
-    returnToMainMenu();
+    returnToSongsMenu();
   }
 }
