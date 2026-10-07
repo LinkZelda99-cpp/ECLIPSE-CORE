@@ -21,7 +21,12 @@ void handleBackButton(){
     case STATE_LIGHT:
     case STATE_DISTANCE:
     case STATE_TEMPERATURE:
-      returnToMainMenu(); break;
+      state=STATE_SENSORS_MENU;
+      lastSensorMenuIndex=-1;
+      invalidateLCD();
+      lcd.clear();
+      clearEncoderEvents();
+      break;
     case STATE_SOLUNE:
       returnToSongsMenu(); break;
     case STATE_SONGS:
