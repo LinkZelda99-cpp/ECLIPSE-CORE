@@ -11,6 +11,7 @@
 #include "MemoryGame.h"
 #include "SnakeGame.h"
 #include "CoreFeatures.h"
+#include "SoluneApp.h"
 #include "Sensors/Sensors.cpp"
 
 void setup(){
@@ -43,6 +44,6 @@ void loop(){
     case STATE_SNAKE_READY:drawSnakeReady();if(consumeEncoderPress()){state=STATE_SNAKE;invalidateLCD();lcd.clear();clearEncoderEvents();lastSnakeMove=millis();}break;
     case STATE_SNAKE:updateSnake();break; case STATE_SNAKE_GAME_OVER:updateSnakeGameOver();break;
     case STATE_LIGHT:updateLightApp();break; case STATE_DISTANCE:updateDistanceApp();break;
-    case STATE_SCORES_MENU:updateScoresMenu();break; case STATE_SCORE_DETAIL:updateScoreDetail();break; case STATE_CORE_INFO:updateCoreInfo();break;
+    case STATE_SCORES_MENU:updateScoresMenu();break; case STATE_SCORE_DETAIL:updateScoreDetail();break; case STATE_SOLUNE:updateSoluneApp();break; case STATE_CORE_INFO:updateCoreInfo();break;
   }
 }
