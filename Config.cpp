@@ -9,9 +9,10 @@ uint8_t eclipseLogo[8][12]={
 {1,1,1,1,0,0,1,1,1,1,1,1},{1,1,1,1,0,0,1,1,1,1,1,1},{0,1,1,1,1,0,0,1,1,1,1,0},
 {0,0,1,1,1,1,1,1,1,1,0,0},{0,0,0,1,1,1,1,1,1,0,0,0}};
 AppState state=STATE_MENU;
-const char* mainMenuItems[]={"GAMES","LIGHT","DISTANCE","TEMP/HUMIDITY","SCORES","SONGS","SETTINGS","CORE INFO"}; const uint8_t MAIN_MENU_COUNT=8; int mainMenuIndex=0,lastMainMenuIndex=-1;
+const char* mainMenuItems[]={"GAMES","SENSORS","SCORES","SONGS","SETTINGS","CORE INFO"}; const uint8_t MAIN_MENU_COUNT=6; int mainMenuIndex=0,lastMainMenuIndex=-1;
 const char* gameMenuItems[]={"ECLIPSE CODE","ECLIPSE REACT","ECLIPSE MEMORY","SNAKE"}; const uint8_t GAME_MENU_COUNT=4; int gameMenuIndex=0,lastGameMenuIndex=-1;
 const char* scoreMenuItems[]={"ECLIPSE CODE","ECLIPSE REACT","ECLIPSE MEMORY","SNAKE"}; const uint8_t SCORE_MENU_COUNT=4; int scoreMenuIndex=0,lastScoreMenuIndex=-1;
+const char* sensorMenuItems[]={"LIGHT","DISTANCE","TEMP/HUMIDITY"}; const uint8_t SENSOR_MENU_COUNT=3; int sensorMenuIndex=0,lastSensorMenuIndex=-1;
 int encoderLastState=0,encoderAccumulator=0,encoderDelta=0;
 bool encoderButtonStable=HIGH,encoderButtonLast=HIGH; unsigned long encoderButtonTimer=0; const unsigned long BUTTON_DEBOUNCE_MS=35; bool encoderPressEvent=false;
 bool backButtonStable=HIGH,backButtonLast=HIGH; unsigned long backButtonTimer=0; bool backPressEvent=false;
