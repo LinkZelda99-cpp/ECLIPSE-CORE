@@ -13,6 +13,7 @@
 #include "CoreFeatures.h"
 #include "SoluneApp.h"
 #include "SongsApp.h"
+#include "SettingsApp.h"
 #include "Sensors/Sensors.cpp"
 
 void setup(){
@@ -25,6 +26,7 @@ void setup(){
   matrixLastScanMicros=micros();
   { uint8_t testFrame[8][12]={}; for(uint8_t y=0;y<8;y++)for(uint8_t x=0;x<12;x++)testFrame[y][x]=(x==y||x==(11-y)); showMatrix(testFrame); matrixDelay(500); clearMatrix(); matrixDelay(50); }
   loadHighScores();
+  loadSettings();
   randomSeed(analogRead(PIN_LIGHT)^micros());
   int clk=digitalRead(PIN_ENCODER_CLK),dt=digitalRead(PIN_ENCODER_DT); encoderLastState=(clk<<1)|dt;
   encoderButtonStable=digitalRead(PIN_ENCODER_SW); encoderButtonLast=encoderButtonStable; encoderButtonTimer=millis();
@@ -45,6 +47,6 @@ void loop(){
     case STATE_SNAKE_READY:drawSnakeReady();if(consumeEncoderPress()){state=STATE_SNAKE;invalidateLCD();lcd.clear();clearEncoderEvents();lastSnakeMove=millis();}break;
     case STATE_SNAKE:updateSnake();break; case STATE_SNAKE_GAME_OVER:updateSnakeGameOver();break;
     case STATE_LIGHT:updateLightApp();break; case STATE_DISTANCE:updateDistanceApp();break;
-    case STATE_SCORES_MENU:updateScoresMenu();break; case STATE_SCORE_DETAIL:updateScoreDetail();break; case STATE_SOLUNE:updateSoluneApp();break; case STATE_SONGS:updateSongsApp();break; case STATE_CORE_INFO:updateCoreInfo();break;
+    case STATE_SCORES_MENU:updateScoresMenu();break; case STATE_SCORE_DETAIL:updateScoreDetail();break; case STATE_SOLUNE:updateSoluneApp();break; case STATE_SONGS:updateSongsApp();break; case STATE_SETTINGS:updateSettings();break; case STATE_CORE_INFO:updateCoreInfo();break;
   }
 }
