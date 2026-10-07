@@ -177,7 +177,7 @@ void updateSongsApp(){
     if(note.frequency==0){
       buzzerOff();
     }else{
-      tone(PIN_BUZZER,note.frequency,note.duration);
+      playTone(note.frequency,note.duration);
     }
 
     songNoteStarted=true;
