@@ -1,6 +1,7 @@
 #include "Sensors.h"
 
 void updateLightSensor(){
+  if(!sensorsEnabled())return;
   if(millis()-lastLightRead<100)return;
   lastLightRead=millis();
   lightReading=analogRead(PIN_LIGHT);
@@ -22,6 +23,7 @@ long readUltrasonic(){
 }
 
 void updateDistanceSensor(){
+  if(!sensorsEnabled())return;
   if(millis()-lastDistanceRead<150)return;
   lastDistanceRead=millis();
   distanceReading=readUltrasonic();
