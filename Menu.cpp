@@ -16,6 +16,7 @@ void handleBackButton(){
       break;
     case STATE_LIGHT:
     case STATE_DISTANCE:
+      returnToMainMenu(); break;
     case STATE_SOLUNE:
       returnToSongsMenu(); break;
     case STATE_SONGS:
