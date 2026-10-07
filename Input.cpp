@@ -1,62 +1,79 @@
 #include "Input.h"
 
-static const uint8_t R_START=0x00;
-static const uint8_t R_CW_FINAL=0x01;
-static const uint8_t R_CW_BEGIN=0x02;
-static const uint8_t R_CW_NEXT=0x03;
-static const uint8_t R_CCW_BEGIN=0x04;
-static const uint8_t R_CCW_FINAL=0x05;
-static const uint8_t R_CCW_NEXT=0x06;
+int encoderLastState = 0;
+int encoderAccumulator = 0;
+int encoderDelta = 0;
 
-static const uint8_t DIR_CW=0x10;
-static const uint8_t DIR_CCW=0x20;
+bool encoderButtonStable = HIGH;
+bool encoderButtonLast = HIGH;
+unsigned long encoderButtonTimer = 0;
+const unsigned long BUTTON_DEBOUNCE_MS = 35;
+bool encoderPressEvent = false;
 
-// Full-step quadrature decoder.
-// It emits exactly one event when a complete detent is reached and
-// rejects invalid/bouncing transitions instead of silently losing steps.
-static const uint8_t encoderStateTable[7][4]={
-  {R_START, R_CW_BEGIN, R_CCW_BEGIN, R_START},
-  {R_CW_NEXT, R_START, R_CW_FINAL, R_START|DIR_CW},
-  {R_CW_NEXT, R_CW_BEGIN, R_START, R_START},
-  {R_CW_NEXT, R_CW_BEGIN, R_CW_FINAL, R_START},
-  {R_CCW_NEXT, R_START, R_CCW_BEGIN, R_START},
-  {R_CCW_NEXT, R_CCW_FINAL, R_START, R_START|DIR_CCW},
-  {R_CCW_NEXT, R_CCW_FINAL, R_CCW_BEGIN, R_START}
+bool backButtonStable = HIGH;
+bool backButtonLast = HIGH;
+unsigned long backButtonTimer = 0;
+bool backPressEvent = false;
+
+// Standard quadrature transition table.
+// We accumulate four valid quarter-steps into one logical encoder detent.
+// This is deliberately tolerant of mechanical bounce.
+static const int8_t encoderTransitionTable[16] = {
+   0, -1,  1,  0,
+   1,  0,  0, -1,
+  -1,  0,  0,  1,
+   0,  1, -1,  0
 };
 
-static uint8_t encoderDecoderState=R_START;
-
 void updateEncoder(){
-  uint8_t pinState=(digitalRead(PIN_ENCODER_DT)<<1)|digitalRead(PIN_ENCODER_CLK);
-  encoderDecoderState=encoderStateTable[encoderDecoderState&0x0F][pinState];
+  int clk=digitalRead(PIN_ENCODER_CLK);
+  int dt=digitalRead(PIN_ENCODER_DT);
+  int currentState=(clk<<1)|dt;
 
-  if(encoderDecoderState&DIR_CW)encoderDelta++;
-  else if(encoderDecoderState&DIR_CCW)encoderDelta--;
+  if(currentState==encoderLastState)return;
 
-  encoderLastState=pinState;
+  int index=(encoderLastState<<2)|currentState;
+  encoderAccumulator+=encoderTransitionTable[index];
+  encoderLastState=currentState;
+
+  if(encoderAccumulator>=4){
+    encoderDelta++;
+    encoderAccumulator=0;
+  }else if(encoderAccumulator<=-4){
+    encoderDelta--;
+    encoderAccumulator=0;
+  }
 }
 
 void updateEncoderButton(){
-  bool r=digitalRead(PIN_ENCODER_SW);
-  if(r!=encoderButtonLast){
+  bool reading=digitalRead(PIN_ENCODER_SW);
+
+  if(reading!=encoderButtonLast){
     encoderButtonTimer=millis();
-    encoderButtonLast=r;
+    encoderButtonLast=reading;
   }
-  if(millis()-encoderButtonTimer>=BUTTON_DEBOUNCE_MS&&r!=encoderButtonStable){
-    encoderButtonStable=r;
-    if(!r)encoderPressEvent=true;
+
+  if(millis()-encoderButtonTimer>=BUTTON_DEBOUNCE_MS){
+    if(reading!=encoderButtonStable){
+      encoderButtonStable=reading;
+      if(encoderButtonStable==LOW)encoderPressEvent=true;
+    }
   }
 }
 
 void updateBackButton(){
-  bool r=digitalRead(PIN_BACK);
-  if(r!=backButtonLast){
+  bool reading=digitalRead(PIN_BACK);
+
+  if(reading!=backButtonLast){
     backButtonTimer=millis();
-    backButtonLast=r;
+    backButtonLast=reading;
   }
-  if(millis()-backButtonTimer>=BUTTON_DEBOUNCE_MS&&r!=backButtonStable){
-    backButtonStable=r;
-    if(!r)backPressEvent=true;
+
+  if(millis()-backButtonTimer>=BUTTON_DEBOUNCE_MS){
+    if(reading!=backButtonStable){
+      backButtonStable=reading;
+      if(backButtonStable==LOW)backPressEvent=true;
+    }
   }
 }
 
@@ -67,9 +84,9 @@ bool consumeBackPress(){
 }
 
 int consumeEncoderDelta(){
-  int r=encoderDelta;
+  int result=encoderDelta;
   encoderDelta=0;
-  return r;
+  return result;
 }
 
 bool consumeEncoderPress(){
@@ -84,8 +101,6 @@ void clearEncoderEvents(){
   encoderPressEvent=false;
   backPressEvent=false;
 
-  // Re-synchronize the decoder with the physical encoder position.
-  uint8_t pinState=(digitalRead(PIN_ENCODER_DT)<<1)|digitalRead(PIN_ENCODER_CLK);
-  encoderLastState=pinState;
-  encoderDecoderState=(pinState==0)?R_START:R_START;
+  // The main sketch initializes encoderLastState from the real pins.
+  // Do not reset it to an arbitrary quadrature state here.
 }
