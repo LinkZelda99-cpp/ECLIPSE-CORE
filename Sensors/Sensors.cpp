@@ -32,27 +32,73 @@ void updateDistanceSensor(){
 bool readDHT11(){
   if(!sensorsEnabled())return false;
 
+  uint8_t data[5]={0,0,0,0,0};
+
+  noInterrupts();
+
   pinMode(PIN_DHT11,OUTPUT);
   digitalWrite(PIN_DHT11,LOW);
-  delay(20);
+  delayMicroseconds(20000);
+
   digitalWrite(PIN_DHT11,HIGH);
   delayMicroseconds(40);
   pinMode(PIN_DHT11,INPUT_PULLUP);
 
-  if(pulseIn(PIN_DHT11,LOW,120)<1)return false;
-  if(pulseIn(PIN_DHT11,HIGH,120)<1)return false;
-
-  uint8_t data[5]={0,0,0,0,0};
-
-  for(uint8_t i=0;i<40;i++){
-    if(pulseIn(PIN_DHT11,LOW,120)<1)return false;
-    unsigned long highTime=pulseIn(PIN_DHT11,HIGH,120);
-    if(highTime<1)return false;
-
-    if(highTime>45)data[i/8]|=(uint8_t)(1<<(7-(i%8)));
+  unsigned long timeoutStart=micros();
+  while(digitalRead(PIN_DHT11)==HIGH){
+    if((unsigned long)(micros()-timeoutStart)>200) {
+      interrupts();
+      return false;
+    }
   }
 
-  if((uint8_t)(data[0]+data[1]+data[2]+data[3])!=data[4])return false;
+  timeoutStart=micros();
+  while(digitalRead(PIN_DHT11)==LOW){
+    if((unsigned long)(micros()-timeoutStart)>200) {
+      interrupts();
+      return false;
+    }
+  }
+
+  timeoutStart=micros();
+  while(digitalRead(PIN_DHT11)==HIGH){
+    if((unsigned long)(micros()-timeoutStart)>200) {
+      interrupts();
+      return false;
+    }
+  }
+
+  for(uint8_t i=0;i<40;i++){
+    timeoutStart=micros();
+    while(digitalRead(PIN_DHT11)==LOW){
+      if((unsigned long)(micros()-timeoutStart)>100) {
+        interrupts();
+        return false;
+      }
+    }
+
+    unsigned long highStart=micros();
+
+    timeoutStart=highStart;
+    while(digitalRead(PIN_DHT11)==HIGH){
+      if((unsigned long)(micros()-timeoutStart)>100) {
+        interrupts();
+        return false;
+      }
+    }
+
+    unsigned long highTime=micros()-highStart;
+
+    if(highTime>45){
+      data[i/8]|=(uint8_t)(1<<(7-(i%8)));
+    }
+  }
+
+  interrupts();
+
+  if((uint8_t)(data[0]+data[1]+data[2]+data[3])!=data[4]){
+    return false;
+  }
 
   dhtHumidity=data[0];
   dhtTempC=data[2];
