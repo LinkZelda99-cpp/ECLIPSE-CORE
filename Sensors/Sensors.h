@@ -4,3 +4,5 @@
 void updateLightSensor();
 long readUltrasonic();
 void updateDistanceSensor();
+
+bool readDHT11();
