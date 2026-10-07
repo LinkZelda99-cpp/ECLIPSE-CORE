@@ -9,7 +9,7 @@ uint8_t eclipseLogo[8][12]={
 {1,1,1,1,0,0,1,1,1,1,1,1},{1,1,1,1,0,0,1,1,1,1,1,1},{0,1,1,1,1,0,0,1,1,1,1,0},
 {0,0,1,1,1,1,1,1,1,1,0,0},{0,0,0,1,1,1,1,1,1,0,0,0}};
 AppState state=STATE_MENU;
-const char* mainMenuItems[]={"GAMES","LIGHT","DISTANCE","SCORES","SOLUNE","CORE INFO"}; const uint8_t MAIN_MENU_COUNT=6; int mainMenuIndex=0,lastMainMenuIndex=-1;
+const char* mainMenuItems[]={"GAMES","LIGHT","DISTANCE","SCORES","SONGS","CORE INFO"}; const uint8_t MAIN_MENU_COUNT=6; int mainMenuIndex=0,lastMainMenuIndex=-1;
 const char* gameMenuItems[]={"ECLIPSE CODE","ECLIPSE REACT","ECLIPSE MEMORY","SNAKE"}; const uint8_t GAME_MENU_COUNT=4; int gameMenuIndex=0,lastGameMenuIndex=-1;
 const char* scoreMenuItems[]={"ECLIPSE CODE","ECLIPSE REACT","ECLIPSE MEMORY","SNAKE"}; const uint8_t SCORE_MENU_COUNT=4; int scoreMenuIndex=0,lastScoreMenuIndex=-1;
 int encoderLastState=0,encoderAccumulator=0,encoderDelta=0;
