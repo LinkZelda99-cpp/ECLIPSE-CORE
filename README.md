@@ -17,6 +17,7 @@ Select **Arduino UNO R4 WiFi** as the board.
 ## Modules
 
 - Config
+- TemperatureApp
 - Input
 - Display
 - Sound
@@ -39,7 +40,7 @@ The project targets the Arduino UNO R4 WiFi and its built-in 12×8 LED matrix. M
 |---|---|
 | D2 | Rotary encoder DT |
 | D3 | Rotary encoder CLK |
-| D4 | DHT11 data |
+| D4 | DHT11 data / P4 |
 | D5 | Rotary encoder button |
 | D6 | HC-SR04 TRIG |
 | D7 | HC-SR04 ECHO |
@@ -56,7 +57,7 @@ The project targets the Arduino UNO R4 WiFi and its built-in 12×8 LED matrix. M
 | A4 | LCD D6 |
 | A5 | LCD D7 |
 
-The DHT11 is wired to D4 but is not currently used by the application.
+The DHT11 is connected through P4 (D4) and is used by the TEMP/HUMIDITY app.
 
 ## Features
 
@@ -65,10 +66,11 @@ The DHT11 is wired to D4 but is not currently used by the application.
 1. GAMES
 2. LIGHT
 3. DISTANCE
-4. SCORES
-5. SONGS
-6. SETTINGS
-7. CORE INFO
+4. TEMP/HUMIDITY
+5. SCORES
+6. SONGS
+7. SETTINGS
+8. CORE INFO
 
 ### Games
 
@@ -77,6 +79,7 @@ The DHT11 is wired to D4 but is not currently used by the application.
 - **ECLIPSE MEMORY** — sequence memory game using the LED matrix.
 - **SNAKE** — 12×8 matrix Snake with rotary-encoder turning, blinking apple, collision detection, scoring, and EEPROM high score storage.
 - **SONGS** — built-in music player containing SOLUNE, the uploaded HAVEN MIDI adaptation, and public-domain arrangements of Canon in D and Für Elise.
+- **TEMP/HUMIDITY** — reads the DHT11 on P4/D4 and alternates between temperature in °F and relative humidity.
 - **SETTINGS** — persistent Sound and Sensors toggles stored in EEPROM. Sound mute applies to UI/game/song audio; disabling sensors prevents the Light and Distance sensor reads.
 
 The D9 back button returns from feature/game screens to the appropriate menu.
@@ -114,6 +117,8 @@ ECLIPSE-CORE/
 ├── SongsApp.h
 ├── SettingsApp.cpp
 ├── SettingsApp.h
+├── TemperatureApp.cpp
+├── TemperatureApp.h
 ├── CoreFeatures.cpp
 ├── CoreFeatures.h
 └── README.md
