@@ -122,6 +122,10 @@ ECLIPSE-CORE/
 ├── TemperatureApp.h
 ├── CoreFeatures.cpp
 ├── CoreFeatures.h
+├── CoreLink.cpp
+├── CoreLink.h
+├── CoreWebPage.h (generated from ECLIPSE-CORE-WEB)
+├── arduino_secrets.example.h
 └── README.md
 ```
 
