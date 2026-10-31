@@ -1,4 +1,5 @@
 #include "CoreFeatures.h"
+#include "CoreLink.h"
 
 void returnToMainMenu(){
   state=STATE_MENU;
@@ -68,7 +69,7 @@ void updateScoresApp(){
 }
 
 void updateCoreInfo(){
-  drawLCD("CORE ONLINE","v2.2 R4 WiFi");
+  drawLCD("CORE ONLINE", coreLinkAddress());
   showEclipseLogo();
   rgbPurple();
   if(consumeEncoderPress())returnToMainMenu();
