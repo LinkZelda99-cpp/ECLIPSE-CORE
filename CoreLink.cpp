@@ -15,6 +15,7 @@ WiFiServer coreWebServer(80);
 bool serverStarted = false;
 bool wifiAttemptStarted = false;
 unsigned long bootMillis = 0;
+unsigned long lastWiFiAttempt = 0;
 
 const char* appName() {
   switch (state) {
@@ -106,6 +107,7 @@ void startCoreLink() {
   bootMillis = millis();
 #if CORE_LINK_HAS_CREDENTIALS
   WiFi.begin(SECRET_SSID, SECRET_PASS);
+  lastWiFiAttempt = millis();
   wifiAttemptStarted = true;
 #else
   // No credentials file: CORE runs normally with networking disabled.
@@ -131,9 +133,21 @@ String coreLinkAddress() {
 void serviceCoreLink() {
 #if CORE_LINK_HAS_CREDENTIALS
   if (!wifiAttemptStarted) return;
-  if (!serverStarted && WiFi.status() == WL_CONNECTED) {
-    coreWebServer.begin();
-    serverStarted = true;
+  if (WiFi.status() == WL_CONNECTED) {
+    if (!serverStarted) {
+      coreWebServer.begin();
+      serverStarted = true;
+    }
+  } else {
+    if (serverStarted) {
+      coreWebServer.end();
+      serverStarted = false;
+    }
+    // Retry periodically without delaying the main application loop.
+    if ((unsigned long)(millis() - lastWiFiAttempt) >= 10000UL) {
+      WiFi.begin(SECRET_SSID, SECRET_PASS);
+      lastWiFiAttempt = millis();
+    }
   }
   if (serverStarted) {
     WiFiClient client = coreWebServer.available();
