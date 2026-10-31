@@ -9,7 +9,7 @@ const char CORE_WEB_HTML[] = R"COREWEB(<!doctype html>
 <meta name="theme-color" content="#0F1218">
 <title>ECLIPSE CORE | Web Control</title>
 <style>
-/* ECLIPSE CORE WEB — site palette */
+/* ECLIPSE CORE WEB — shared site palette and portfolio shell */
 :root {
   color-scheme: dark;
   --color-background: #0F1218;
@@ -35,47 +35,44 @@ body {
 
 a { color: var(--color-link); }
 
-.topbar {
+/* Shared site header */
+#site-header {
   display: flex;
-  align-items: center;
   justify-content: space-between;
+  align-items: center;
   flex-wrap: wrap;
-  gap: 16px;
+  gap: 16px 24px;
   padding: 15px 30px;
   border-bottom: 1px solid var(--color-border);
 }
 
-.brand {
+#site-logo img,
+#footer-logo img {
+  display: block;
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+}
+
+#site-header .header-right {
   display: flex;
   align-items: center;
-  gap: 12px;
+  flex-wrap: wrap;
+  gap: 18px 24px;
 }
 
-.mark {
-  display: grid;
-  place-items: center;
-  width: 42px;
-  height: 42px;
-  border: 1px solid var(--color-border);
-  color: var(--color-accent);
-  font-size: 22px;
-  font-weight: bold;
+#site-header nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
 }
 
-.brand strong,
-.brand small { display: block; }
-
-.brand strong {
-  color: var(--color-text);
-  font-size: 15px;
-  letter-spacing: 1.5px;
+#site-header nav a {
+  color: var(--color-link);
+  text-decoration: none;
 }
 
-.brand small {
-  color: var(--color-muted);
-  font-size: 11px;
-  letter-spacing: 1.5px;
-}
+#site-header nav a:hover { text-decoration: underline; }
 
 .status {
   display: flex;
@@ -83,6 +80,7 @@ a { color: var(--color-link); }
   gap: 9px;
   color: var(--color-muted);
   font-size: 12px;
+  white-space: nowrap;
 }
 
 .status i {
@@ -95,6 +93,7 @@ a { color: var(--color-link); }
 .status.online { color: #3FB950; }
 .status.online i { background: #3FB950; }
 
+/* CORE page content */
 main {
   width: min(100% - 40px, 1100px);
   margin: 0 auto;
@@ -240,35 +239,108 @@ button:focus-visible {
   font-size: 12px;
 }
 
-footer {
+/* Shared site footer */
+.site-footer {
+  padding: 24px 10px 16px;
+  background-color: var(--color-background);
+  border-top: 1px solid #293750;
+}
+
+.footer-main {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   flex-wrap: wrap;
-  gap: 10px 20px;
-  margin-top: 30px;
-  padding: 16px 0;
-  border-top: 1px solid var(--color-border);
+  gap: 20px;
+  padding-bottom: 20px;
+}
+
+.footer-brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.footer-identity p { margin: 0; }
+
+.footer-name {
+  color: var(--color-text);
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.footer-tagline {
+  margin-top: 5px !important;
+  color: var(--color-muted);
+  font-size: 14px;
+}
+
+.footer-nav,
+.footer-social {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+}
+
+.footer-nav a,
+.footer-social a {
+  color: var(--color-muted);
+  font-size: 14px;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.footer-nav a:hover,
+.footer-social a:hover { color: var(--color-accent); }
+
+.footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px 24px;
+  padding: 14px 10px 0;
+  margin: 0 -10px;
+  border-top: 1px solid #293750;
+}
+
+.footer-bottom p {
+  margin: 0;
   color: #8B949E;
   font-size: 12px;
+  line-height: 1.6;
 }
 
 @media (max-width: 600px) {
-  .topbar { padding: 15px 20px; }
+  #site-header { padding: 15px 20px; }
+  #site-header .header-right { align-items: flex-start; flex-direction: column; gap: 12px; }
+  #site-header nav { gap: 12px; }
   main { width: calc(100% - 40px); padding-top: 30px; }
   .grid { grid-template-columns: 1fr; gap: 14px; }
   .sensors { grid-column: auto; }
   .panel { padding: 19px; }
-  footer { flex-direction: column; }
+  .site-footer { padding: 30px 20px 20px; }
+  .footer-main { align-items: flex-start; flex-direction: column; gap: 24px; }
+  .footer-nav, .footer-social { gap: 14px 18px; }
+  .footer-bottom { align-items: flex-start; flex-direction: column; margin: 0 -20px; padding: 14px 20px 0; }
 }
 </style>
 </head>
 <body>
-<header class="topbar">
-  <div class="brand">
-    <span class="mark" aria-hidden="true">E</span>
-    <div><strong>ECLIPSE CORE</strong><small>WEB CONTROL</small></div>
+<header id="site-header">
+  <a href="https://austinmcdonald.dev/" id="site-logo" aria-label="Austin McDonald — Home">
+    <img src="https://austinmcdonald.dev/images/logo.png" alt="">
+  </a>
+  <div class="header-right">
+    <nav aria-label="Main navigation">
+      <a href="https://austinmcdonald.dev/#about">About</a>
+      <a href="https://austinmcdonald.dev/#projects">Projects</a>
+      <a href="https://austinmcdonald.dev/#skills">Skills &amp; Technologies</a>
+      <a href="https://austinmcdonald.dev/#contact">Contact</a>
+      <a href="https://austinmcdonald.dev/blog/">Blog</a>
+    </nav>
+    <div id="connection" class="status"><i></i><span>CONNECTING</span></div>
   </div>
-  <div id="connection" class="status"><i></i><span>CONNECTING</span></div>
 </header>
 <main>
   <section class="hero">
@@ -304,8 +376,33 @@ footer {
       <p class="hint">Readings update when the corresponding CORE sensor app refreshes them.</p>
     </article>
   </section>
-  <footer><span>ECLIPSE CORE WEB</span><span>LOCAL NETWORK ONLY · V1</span></footer>
 </main>
+<footer class="site-footer">
+  <div class="footer-main">
+    <div class="footer-brand">
+      <a href="https://austinmcdonald.dev/" id="footer-logo" aria-label="Austin McDonald — Home">
+        <img src="https://austinmcdonald.dev/images/logo.png" alt="">
+      </a>
+      <div class="footer-identity">
+        <p class="footer-name">Austin McDonald</p>
+        <p class="footer-tagline">Programmer &amp; Game Developer</p>
+      </div>
+    </div>
+    <nav class="footer-nav" aria-label="Footer navigation">
+      <a href="https://austinmcdonald.dev/#about">About</a>
+      <a href="https://austinmcdonald.dev/#projects">Projects</a>
+      <a href="https://austinmcdonald.dev/#skills">Skills &amp; Technologies</a>
+    </nav>
+    <div class="footer-social">
+      <a href="https://github.com/LinkZelda99-cpp" target="_blank" rel="noopener noreferrer">GitHub</a>
+      <a href="https://linktr.ee/LinkZelda99" target="_blank" rel="noopener noreferrer">Linktree</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p class="footer-photo-credit">Mountain photograph: &copy; 2022 Mark Durant Photography</p>
+    <p class="footer-copyright">&copy; 2026 Austin McDonald</p>
+  </div>
+</footer>
 <script>
 const $=id=>document.getElementById(id);let online=false;async function refresh(){try{const r=await fetch('/api/v1/status',{cache:'no-store'});if(!r.ok)throw Error('HTTP '+r.status);const d=await r.json();online=!!d.wifiConnected;$('connection').classList.toggle('online',online);$('connection').querySelector('span').textContent=online?'CONNECTED':'OFFLINE';$('deviceState').textContent=online?'CORE ONLINE':'CORE OFFLINE';$('ipAddress').textContent=d.ip||'—';$('appState').textContent=d.app||'—';$('uptime').textContent=d.uptimeSeconds!=null?formatTime(d.uptimeSeconds):'—';$('light').textContent=d.light!=null?d.light+' / 1023':'—';$('distance').textContent=d.distanceCm!=null?d.distanceCm+' cm':'—';$('temperature').textContent=d.temperatureF!=null?d.temperatureF+' °F':'—';$('humidity').textContent=d.humidity!=null?d.humidity+'%':'—';}catch(e){online=false;$('connection').classList.remove('online');$('connection').querySelector('span').textContent='NOT CONNECTED';$('deviceState').textContent='WAITING FOR CORE';}}function formatTime(s){const h=Math.floor(s/3600),m=Math.floor(s%3600/60),sec=s%60;return h+'h '+m+'m '+sec+'s'}async function send(action){if(!online){$('commandMessage').textContent='CORE is not connected. Check that your phone and Arduino are on the same Wi-Fi.';return}try{const r=await fetch('/api/v1/input/'+action,{method:'POST'});if(!r.ok)throw Error('Command rejected');$('commandMessage').textContent='Command sent: '+action.toUpperCase();}catch(e){$('commandMessage').textContent='Could not send command.'}}document.querySelectorAll('[data-action]').forEach(b=>b.addEventListener('click',()=>send(b.dataset.action)));refresh();setInterval(refresh,1500);
 </script>
