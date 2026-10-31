@@ -113,6 +113,21 @@ void startCoreLink() {
 #endif
 }
 
+bool coreLinkConnected() {
+#if CORE_LINK_HAS_CREDENTIALS
+  return serverStarted && WiFi.status() == WL_CONNECTED;
+#else
+  return false;
+#endif
+}
+
+String coreLinkAddress() {
+#if CORE_LINK_HAS_CREDENTIALS
+  if (coreLinkConnected()) return WiFi.localIP().toString();
+#endif
+  return "WEB OFFLINE";
+}
+
 void serviceCoreLink() {
 #if CORE_LINK_HAS_CREDENTIALS
   if (!wifiAttemptStarted) return;
