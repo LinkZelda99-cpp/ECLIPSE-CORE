@@ -132,3 +132,23 @@ The old `Core.cpp`, `Core.h`, and obsolete `ECLIPSE-CORE-.ino` implementations a
 ECLIPSE CORE uses a manual 8×12 matrix scanner so application frames remain continuously refreshed while the main loop runs. The startup sequence also displays a short X-shaped matrix self-test before entering the application.
 
 The repository has been checked for duplicate sketch entry points and the current source structure. It has **not** been represented as compiler-verified because an Arduino UNO R4 WiFi compiler environment is not available in this workspace.
+
+
+## CORE LINK / CORE WEB integration
+
+The `feature/core-web-integration` branch adds an optional local web interface for the Arduino UNO R4 WiFi.
+
+- `CoreLink.cpp/.h` manages Wi-Fi and a small HTTP server.
+- `CoreWebPage.h` contains the generated browser interface.
+- `arduino_secrets.example.h` is a template for local Wi-Fi credentials.
+- `CoreLink` injects remote up/down/select/back actions into the same input events used by the physical controls.
+
+### Enable Wi-Fi
+
+1. Copy `arduino_secrets.example.h` to `arduino_secrets.h`.
+2. Enter your own Wi-Fi network name and password in `arduino_secrets.h`.
+3. Keep `arduino_secrets.h` private; it is excluded by `.gitignore`.
+4. Upload the sketch to an Arduino UNO R4 WiFi.
+5. Open **CORE INFO** on the LCD to read the local IP address, then open that address on a phone connected to the same Wi-Fi.
+
+If the credentials file is absent, CORE LINK stays disabled and the original local interface continues to run. Wi-Fi startup and reconnect attempts are non-blocking. This first milestone has not yet been compiler-verified on physical UNO R4 WiFi hardware.
