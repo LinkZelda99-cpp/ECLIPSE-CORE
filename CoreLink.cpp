@@ -54,19 +54,19 @@ const char* appName() {
 }
 
 String statusJson() {
-  String json = "{\\"wifiConnected\\":true,\\"ip\\":\\"";
+  String json = "{\"wifiConnected\":true,\"ip\":\"";
   json += WiFi.localIP().toString();
-  json += "\\",\\"app\\":\\""; json += appName();
-  json += "\\",\\"uptimeSeconds\\":"; json += (unsigned long)((millis()-bootMillis)/1000);
-  json += ",\\"light\\":"; json += lightReading;
-  json += ",\\"distanceCm\\":";
+  json += "\",\"app\":\""; json += appName();
+  json += "\",\"uptimeSeconds\":"; json += (unsigned long)((millis()-bootMillis)/1000);
+  json += ",\"light\":"; json += lightReading;
+  json += ",\"distanceCm\":";
   if (distanceReading < 0) json += "null"; else json += distanceReading;
-  json += ",\\"temperatureF\\":";
+  json += ",\"temperatureF\":";
   if (!dhtValid) json += "null"; else json += dhtTempF;
-  json += ",\\"humidity\\":";
+  json += ",\"humidity\":";
   if (!dhtValid) json += "null"; else json += dhtHumidity;
-  json += ",\\"sensorsEnabled\\":"; json += sensorsEnabled() ? "true" : "false";
-  json += ",\\"soundEnabled\\":"; json += soundEnabled() ? "true" : "false";
+  json += ",\"sensorsEnabled\":"; json += sensorsEnabled() ? "true" : "false";
+  json += ",\"soundEnabled\":"; json += soundEnabled() ? "true" : "false";
   json += "}";
   return json;
 }
@@ -75,7 +75,7 @@ void beginResponse(const char* type, const char* body, size_t bodyLength,
                    int code = 200, const char* label = "OK") {
   responseHeaderLength = (size_t)snprintf(
     responseHeader, sizeof(responseHeader),
-    "HTTP/1.1 %d %s\\r\\nContent-Type: %s\\r\\nCache-Control: no-store\\r\\nConnection: close\\r\\nContent-Length: %u\\r\\n\\r\\n",
+    "HTTP/1.1 %d %s\r\nContent-Type: %s\r\nCache-Control: no-store\r\nConnection: close\r\nContent-Length: %u\r\n\r\n",
     code, label, type, (unsigned int)bodyLength
   );
   responseHeaderOffset = 0;
@@ -86,12 +86,12 @@ void beginResponse(const char* type, const char* body, size_t bodyLength,
 }
 
 void routeRequest() {
-  requestLineBuffer[requestLineLength] = '\\0';
+  requestLineBuffer[requestLineLength] = '\0';
   String requestLine(requestLineBuffer);
   int firstSpace = requestLine.indexOf(' ');
   int secondSpace = requestLine.indexOf(' ', firstSpace + 1);
   if (firstSpace < 0 || secondSpace < 0) {
-    responseStorage = "{\\"ok\\":false,\\"error\\":\\"bad_request\\"}";
+    responseStorage = "{\"ok\":false,\"error\":\"bad_request\"}";
     beginResponse("application/json", responseStorage.c_str(), responseStorage.length(), 400, "Bad Request");
     return;
   }
@@ -106,22 +106,22 @@ void routeRequest() {
     beginResponse("application/json; charset=utf-8", responseStorage.c_str(), responseStorage.length());
   } else if (method == "POST" && path == "/api/v1/input/up") {
     encoderDelta--;
-    responseStorage = "{\\"ok\\":true,\\"action\\":\\"up\\"}";
+    responseStorage = "{\"ok\":true,\"action\":\"up\"}";
     beginResponse("application/json", responseStorage.c_str(), responseStorage.length());
   } else if (method == "POST" && path == "/api/v1/input/down") {
     encoderDelta++;
-    responseStorage = "{\\"ok\\":true,\\"action\\":\\"down\\"}";
+    responseStorage = "{\"ok\":true,\"action\":\"down\"}";
     beginResponse("application/json", responseStorage.c_str(), responseStorage.length());
   } else if (method == "POST" && path == "/api/v1/input/select") {
     encoderPressEvent = true;
-    responseStorage = "{\\"ok\\":true,\\"action\\":\\"select\\"}";
+    responseStorage = "{\"ok\":true,\"action\":\"select\"}";
     beginResponse("application/json", responseStorage.c_str(), responseStorage.length());
   } else if (method == "POST" && path == "/api/v1/input/back") {
     backPressEvent = true;
-    responseStorage = "{\\"ok\\":true,\\"action\\":\\"back\\"}";
+    responseStorage = "{\"ok\":true,\"action\":\"back\"}";
     beginResponse("application/json", responseStorage.c_str(), responseStorage.length());
   } else {
-    responseStorage = "{\\"ok\\":false,\\"error\\":\\"not_found\\"}";
+    responseStorage = "{\"ok\":false,\"error\":\"not_found\"}";
     beginResponse("application/json", responseStorage.c_str(), responseStorage.length(), 404, "Not Found");
   }
 }
@@ -131,11 +131,11 @@ void serviceRequestInput() {
   uint8_t budget = 64;
   while (activeClient && activeClient.connected() && activeClient.available() && budget--) {
     char ch = (char)activeClient.read();
-    if (ch == '\\n') {
+    if (ch == '\n') {
       routeRequest();
       return;
     }
-    if (ch != '\\r' && requestLineLength < sizeof(requestLineBuffer) - 1) {
+    if (ch != '\r' && requestLineLength < sizeof(requestLineBuffer) - 1) {
       requestLineBuffer[requestLineLength++] = ch;
     } else if (requestLineLength >= sizeof(requestLineBuffer) - 1) {
       activeClient.stop();
