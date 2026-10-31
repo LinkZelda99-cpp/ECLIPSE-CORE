@@ -17,6 +17,7 @@
 #include "TemperatureApp.h"
 #include "SensorsApp.h"
 #include "Sensors/Sensors.cpp"
+#include "CoreLink.h"
 
 void setup() {
   pinMode(PIN_ENCODER_DT, INPUT_PULLUP);
@@ -46,6 +47,7 @@ void setup() {
   }
   loadHighScores();
   loadSettings();
+  startCoreLink();
   randomSeed(analogRead(PIN_LIGHT)^micros());
   int clk = digitalRead(PIN_ENCODER_CLK), dt = digitalRead(PIN_ENCODER_DT);
   encoderLastState = (clk << 1) | dt;
@@ -65,6 +67,7 @@ void setup() {
 }
 
 void loop() {
+  serviceCoreLink();
   matrixService(); updateEncoder(); updateEncoderButton(); updateBackButton();
   if (consumeBackPress()) {
     handleBackButton();
